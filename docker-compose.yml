@@ -1,4 +1,4 @@
-version: '3.8'
+version: '2.4'
 services:
   db:
     image: postgres:latest
@@ -11,26 +11,29 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    mem_limit: 1g        # Ограничение в 1 ГБ
+    mem_reservation: 512m  # Минимальный резерв (опционально)
+
   backend:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/movie_app?schema=public
     depends_on:
       - db
     restart: unless-stopped
+    mem_limit: 512m      # Ограничение в 512 МБ
 
   frontend:
     build:
-      context: ./frontend # Папка с Next.js проектом
+      context: ./frontend  # Папка с Next.js проектом
       dockerfile: Dockerfile
     ports:
-      - "3001:3000" # Next.js внутри на 3000, снаружи на 3001
+      - "3001:3000"  # Next.js внутри на 3000, снаружи на 3001
     depends_on:
       - backend
+    mem_limit: 256m      # Ограничение в 256 МБ
 
 volumes:
   postgres_data:
