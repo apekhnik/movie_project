@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  server:
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,6 +22,15 @@ services:
     depends_on:
       - db
     restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend # Папка с Next.js проектом
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000" # Next.js внутри на 3000, снаружи на 3001
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
