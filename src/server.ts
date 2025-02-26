@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from './prismaClient.js'
 
-const prisma = new PrismaClient();
 
 async function seed() {
     // Очистка таблиц (опционально, чтобы начать с чистого листа)
@@ -96,6 +95,11 @@ seed()
         process.exit(1);
     });
 
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+const server = app.listen(3000, () => console.log("Server started"));
+
+process.on("SIGTERM", async () => {
+    console.log("Shutting down...");
+    await prisma.$disconnect();
+    server.close();
+    process.exit(0);
 });
