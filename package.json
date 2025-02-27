@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node  --trace-deprecation dist/server.js",
-    "dev": "nodemon --exec 'ts-node --esm' src/server.ts"
+    "dev": "nodemon --exec 'ts-node --esm' src/server.ts",
+    "prisma:generate": "prisma generate --schema=./prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
