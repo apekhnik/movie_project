@@ -10,7 +10,6 @@ interface ApiError {
     error: string;
 }
 
-// Логин
 export async function handleLogin(login: string, password: string): Promise<void> {
     const { login: authLogin } = useAuthStore.getState(); // Используем getState для доступа вне React
     const res = await fetch("http://localhost:3000/auth/login", {
@@ -25,7 +24,6 @@ export async function handleLogin(login: string, password: string): Promise<void
     authLogin((data as LoginResponse).token, (data as LoginResponse).userId);
 }
 
-// Регистрация
 export async function handleRegistration(login: string, password: string): Promise<void> {
     const { login: authLogin } = useAuthStore.getState();
     const res = await fetch("http://localhost:3000/auth/registration", {
@@ -57,9 +55,35 @@ export async function fetchProfile(): Promise<{ id: number; login: string; movie
 }
 
 export async function fetchTopMovies(): Promise<Movie[]> {
-    const res = await fetch("http://backend:3000/movies/top-rated", {
-        cache: "no-store", // Отключаем кэш для актуальности
-    });
-    if (!res.ok) throw new Error("Failed to fetch top movies");
+    console.log('hello')
+    const res = await fetch("http://backend:3000/movies", { cache: "no-store" });
+    if (!res.ok) {
+        console.error(`Failed to fetch top movies: ${res.status} ${res.statusText}`);
+        throw new Error("Failed to fetch top movies");
+    }
     return res.json();
+}
+
+export async function fetchMovie(id: string): Promise<Movie> {
+    const res = await fetch(`http://backend:3000/movies/${id}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch movie");
+    console.log('movie found');
+    return res.json();
+}
+
+export async function addMovieToProfile(movie: any): Promise<void> {
+    const { token } = useAuthStore.getState();
+    if (!token) throw new Error("No token available");
+
+    const res = await fetch("http://localhost:3000/profile", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ movie }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to add movie");
 }

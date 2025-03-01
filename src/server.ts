@@ -3,10 +3,11 @@ import prisma from './prismaClient.js'
 import cors from "cors";
 import fetch from "node-fetch";
 import { config } from "dotenv";
-import {ITmdbResponse} from "./types/types.js";
+import {ITmdbMovie, ITmdbResponse} from "./types/types.js";
 import authRouter from "./routers/authRouter.js";
 import {authMiddleware} from "./middleware/authMiddleware.js";
 import profileRouter from "./routers/profileRouter.js";
+import moviesRouter from "./routers/moviesRouter.js";
 
 config(); // Загружаем .env
 
@@ -19,7 +20,8 @@ app.use("/auth", authRouter);
 
 app.use('/profile', authMiddleware, profileRouter)
 
-// Добавляем маршрут для поиска фильмов
+app.use('/movies', moviesRouter)
+
 app.get("/search", async (req: Request, res: Response): Promise<void> => {
     const apiKey = process.env.TMDB_API_KEY;
     const query = req.query.q as string;
@@ -42,32 +44,6 @@ app.get("/search", async (req: Request, res: Response): Promise<void> => {
     } catch (error) {
         console.error("Search movies error:", error);
         res.status(500).json({ error: "Failed to search movies" });
-    }
-});
-
-app.get("/movies/top-rated", async (req: Request, res: Response): Promise<void> => {
-    try {
-        const apiKey = process.env.TMDB_API_KEY;
-        if (!apiKey) {
-             res.status(500).json({ error: "TMDB API key is missing" });
-             return;
-        }
-
-        const response = await fetch(
-            `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=en-US&page=1`
-        );
-        if (!response.ok) {
-            throw new Error(`TMDb API error: ${response.statusText}`);
-        }
-
-
-        const data: ITmdbResponse = (await response.json()) as ITmdbResponse
-        // Берем только первые 10 фильмов из результата
-        const topMovies = data.results.slice(0, 10);
-        res.json(topMovies);
-    } catch (error) {
-        console.error("Error fetching top movies:", error);
-        res.status(500).json({ error: "Failed to fetch top movies" });
     }
 });
 
