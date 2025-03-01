@@ -43,7 +43,7 @@ export const useAuthStore = create<AuthState>()(
 
 export const useUiStore = create<UiState>((set) => ({
     isLoading: false,
-    isSidebarOpen: false,
+    isSidebarOpen: true,
     toggleLoading:() => set((state) => ({ isLoading: !state.isLoading })),
     toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
 }));

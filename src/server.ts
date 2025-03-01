@@ -5,6 +5,8 @@ import fetch from "node-fetch";
 import { config } from "dotenv";
 import {ITmdbResponse} from "./types/types.js";
 import authRouter from "./routers/authRouter.js";
+import {authMiddleware} from "./middleware/authMiddleware.js";
+import profileRouter from "./routers/profileRouter.js";
 
 config(); // Загружаем .env
 
@@ -15,16 +17,35 @@ app.use(cors({ origin: "http://localhost:3001" }))
 
 app.use("/auth", authRouter);
 
-app.get("/users", async (req: Request, res: Response) => {
-    console.log('aaaU')
-    const users = await prisma.user.findMany({
-        include: { movies: true },
-    });
-    res.json(users);
+app.use('/profile', authMiddleware, profileRouter)
+
+// Добавляем маршрут для поиска фильмов
+app.get("/search", async (req: Request, res: Response): Promise<void> => {
+    const apiKey = process.env.TMDB_API_KEY;
+    const query = req.query.q as string;
+
+    if (!apiKey || !query) {
+        res.status(400).json({ error: "TMDB API key or query is missing" });
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=en-US&query=${encodeURIComponent(query)}&page=1`
+        );
+        if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
+
+        const data: ITmdbResponse = (await response.json()) as ITmdbResponse
+        console.log(data, 'data')
+
+        res.json(data.results);
+    } catch (error) {
+        console.error("Search movies error:", error);
+        res.status(500).json({ error: "Failed to search movies" });
+    }
 });
 
 app.get("/movies/top-rated", async (req: Request, res: Response): Promise<void> => {
-    console.log('aaaM')
     try {
         const apiKey = process.env.TMDB_API_KEY;
         if (!apiKey) {
@@ -40,11 +61,9 @@ app.get("/movies/top-rated", async (req: Request, res: Response): Promise<void> 
         }
 
 
-        // @ts-ignore
-        const data: ITmdbResponse = await response.json();
+        const data: ITmdbResponse = (await response.json()) as ITmdbResponse
         // Берем только первые 10 фильмов из результата
         const topMovies = data.results.slice(0, 10);
-        console.log(data)
         res.json(topMovies);
     } catch (error) {
         console.error("Error fetching top movies:", error);
