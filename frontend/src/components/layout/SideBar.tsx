@@ -1,10 +1,10 @@
 "use client";
 
-import { useMovieStore } from "@/lib/store";
+import { useUiStore} from "@/lib/store";
 import Link from "next/link";
 
 export function Sidebar() {
-    const { isSidebarOpen, toggleSidebar } = useMovieStore();
+    const { isSidebarOpen, toggleSidebar } = useUiStore();
 
     return (
         <div
