@@ -20,6 +20,7 @@ export default function LoginPage() {
             setLogin("");
             setPassword("");
         } catch (error: unknown) {
+            //TODO
             setError(error instanceof Error ? error.message : "An unknown error occurred");
         }
     };
@@ -33,6 +34,7 @@ export default function LoginPage() {
             setLogin("");
             setPassword("");
         } catch (error: unknown) {
+            //TODO
             setError(error instanceof Error ? error.message : "An unknown error occurred");
         }
     };

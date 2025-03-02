@@ -9,6 +9,7 @@ export default function ProfilePage() {
     const [profile, setProfile] = useState<{ id: number; login: string; movieList: any[] } | null>(null);
     const [error, setError] = useState<string | null>(null);
 
+    //TODO
     useEffect(() => {
         if (isAuthenticated) {
             fetchProfile()

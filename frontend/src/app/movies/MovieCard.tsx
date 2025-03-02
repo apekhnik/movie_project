@@ -16,6 +16,7 @@ export function MovieCard({ movie }: { movie: Movie }) {
             await addMovieToProfile(movie);
             setSuccess("Movie added to profile!");
         } catch (err: unknown) {
+            //TODO
             setError(err instanceof Error ? err.message : "Failed to add movie");
         }
     };

@@ -54,3 +54,22 @@ export enum MovieGenre {
     War = 10752,
     Western = 37,
 }
+
+export enum TvGenre {
+    ActionAndAdventure = 10759,
+    Animation = 16,         // Совпадает с фильмами
+    Comedy = 35,            // Совпадает с фильмами
+    Crime = 80,             // Совпадает с фильмами
+    Documentary = 99,       // Совпадает с фильмами
+    Drama = 18,             // Совпадает с фильмами
+    Family = 10751,         // Совпадает с фильмами
+    Kids = 10762,
+    Mystery = 9648,         // Совпадает с фильмами
+    News = 10763,
+    Reality = 10764,
+    SciFiAndFantasy = 10765,
+    Soap = 10766,
+    Talk = 10767,
+    WarAndPolitics = 10768,
+    Western = 37,           // Совпадает с фильмами
+}

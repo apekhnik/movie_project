@@ -55,7 +55,6 @@ export async function fetchProfile(): Promise<{ id: number; login: string; movie
 }
 
 export async function fetchTopMovies(): Promise<Movie[]> {
-    console.log('hello')
     const res = await fetch("http://backend:3000/movies", { cache: "no-store" });
     if (!res.ok) {
         console.error(`Failed to fetch top movies: ${res.status} ${res.statusText}`);

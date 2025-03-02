@@ -4,6 +4,8 @@ import "./globals.css";
 import {Sidebar} from "@/components/layout/SideBar";
 import {Header} from "@/components/layout/Header";
 import {LoadingWrapper} from "@/components/layout/LoadingWrapper";
+import {ToastContainer} from "react-toastify";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +35,20 @@ export default function RootLayout({
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
-        <LoadingWrapper>{children}</LoadingWrapper>
+          <AuthProvider>
+              <LoadingWrapper>{children}</LoadingWrapper>
+          </AuthProvider>
+          <ToastContainer
+              position="bottom-right" // Внизу справа
+              autoClose={3000} // Закрывается через 3 секунды
+              hideProgressBar={false} // Показываем прогресс-бар
+              newestOnTop={false} // Новые сообщения снизу
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+          />
       </div>
       </body>
     </html>

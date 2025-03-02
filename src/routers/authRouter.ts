@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import prisma from "../prismaClient.js";
+import {authMiddleware} from "../middleware/authMiddleware.js";
 
 const authRouter = Router();
 
@@ -73,6 +74,23 @@ authRouter.post("/login", async (req: Request, res: Response): Promise<void> => 
         console.error("Login error:", error);
         res.status(500).json({ error: "Failed to login" });
     }
+});
+
+authRouter.get('/verify', authMiddleware, async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.id;
+    if (!userId) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+    }
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, login: true },
+    });
+    if (!user) {
+        res.status(404).json({ error: "User not found" });
+        return;
+    }
+    res.json({ message: "Token is valid", user });
 });
 
 export default authRouter;

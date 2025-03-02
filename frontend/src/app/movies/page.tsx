@@ -7,6 +7,7 @@ export default async function MoviesPage() {
     try {
         topMovies = await fetchTopMovies();
     } catch (error) {
+        //TODO
         console.error("Error fetching top movies:", error);
         return (
             <div className="container mx-auto p-4">
