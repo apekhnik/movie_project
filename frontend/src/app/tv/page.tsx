@@ -1,10 +1,6 @@
-import { Movie } from "@/types/types"; // Переименуем Movie в TvShow, если нужно
+import { Movie } from "@/types/types";
+import {fetchTopTvShows} from "@/lib/api"; // Переименуем Movie в TvShow, если нужно
 
-async function fetchTopTvShows(): Promise<Movie[]> {
-    const res = await fetch("http://backend:3000/tv", { cache: "no-store" });
-    if (!res.ok) throw new Error("Failed to fetch top TV shows");
-    return res.json();
-}
 
 export default async function TopRatedTvShowsPage() {
     let topShows: Movie[] = [];

@@ -4,20 +4,20 @@ import { Movie } from "@/types/types";
 import { addMovieToProfile } from "@/lib/api";
 import { useState } from "react";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export function MovieCard({ movie }: { movie: Movie }) {
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+    const [isAdding, setIsAdding] = useState(false);
 
     const handleAddToProfile = async () => {
-        setError(null);
-        setSuccess(null);
+        setIsAdding(true);
         try {
             await addMovieToProfile(movie);
-            setSuccess("Movie added to profile!");
+            toast.success("Movie added to profile!");
         } catch (err: unknown) {
-            //TODO
-            setError(err instanceof Error ? err.message : "Failed to add movie");
+            toast.error(err instanceof Error ? err.message : "Failed to add movie");
+        } finally {
+            setIsAdding(false);
         }
     };
 
@@ -36,12 +36,11 @@ export function MovieCard({ movie }: { movie: Movie }) {
             </Link>
             <button
                 onClick={handleAddToProfile}
-                className="mt-2 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
+                disabled={isAdding}
+                className="mt-2 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded disabled:bg-gray-400"
             >
-                Add to Profile
+                {isAdding ? "Adding..." : "Add to Profile"}
             </button>
-            {success && <p className="mt-2 text-green-600">{success}</p>}
-            {error && <p className="mt-2 text-red-600">{error}</p>}
         </div>
     );
 }

@@ -7,6 +7,7 @@ const moviesRouter =  Router();
 
 moviesRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
     const apiKey = process.env.TMDB_API_KEY;
+    const language = (req.query.language as string) || "en";
     const { id } = req.params;
 
     if (!apiKey) {
@@ -19,7 +20,7 @@ moviesRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
     }
 
     const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=${language}`
     );
     if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
     const data = (await response.json()) as ITmdbMovie;
@@ -28,16 +29,33 @@ moviesRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
 
 moviesRouter.get("/", async (req: Request, res: Response): Promise<void> => {
     const apiKey = process.env.TMDB_API_KEY;
+    const page = parseInt(req.query.page as string) || 1;
+    const language = (req.query.language as string) || "en";
+    const perPage = 10; // 10 фильмов на странице
+
     if (!apiKey) {
         res.status(500).json({ error: "TMDB API key is missing" });
         return;
     }
-    const response = await fetch(
-        `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=en-US&page=1`
-    );
-    if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
-    const data = (await response.json()) as ITmdbResponse;
-    res.json(data.results.slice(0, 10));
+
+    try {
+        const response = await fetch(
+            `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=${language}&page=${page}`
+        );
+        if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
+        const data = (await response.json()) as ITmdbResponse;
+        const totalMovies = Math.min(data.total_results, 100); // Ограничиваем до 100 фильмов
+        const totalPages = Math.ceil(totalMovies / perPage);
+
+        res.json({
+            movies: data.results.slice(0, perPage),
+            totalPages,
+            currentPage: page,
+        });
+    } catch (error) {
+        console.error("Error fetching top movies:", error);
+        res.status(500).json({ error: "Failed to fetch top movies" });
+    }
 })
 
 export default moviesRouter;

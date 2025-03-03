@@ -54,8 +54,20 @@ export async function fetchProfile(): Promise<{ id: number; login: string; movie
     return data;
 }
 
-export async function fetchTopMovies(): Promise<Movie[]> {
-    const res = await fetch("http://backend:3000/movies", { cache: "no-store" });
+export async function fetchTopAnime(language: string = "ru"): Promise<Movie[]> {
+    const res = await fetch(`http://backend:3000/anime?language=${language}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch top anime");
+    return res.json();
+}
+
+export async function fetchTopTvShows(language: string = "ru"): Promise<Movie[]> {
+    const res = await fetch(`http://backend:3000/tv?language=${language}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch top TV shows");
+    return res.json();
+}
+
+export async function fetchTopMovies(language: string = "ru"): Promise<Movie[]> {
+    const res = await fetch(`http://backend:3000/movies?language=${language}`, { cache: "no-store" });
     if (!res.ok) {
         console.error(`Failed to fetch top movies: ${res.status} ${res.statusText}`);
         throw new Error("Failed to fetch top movies");
@@ -63,8 +75,18 @@ export async function fetchTopMovies(): Promise<Movie[]> {
     return res.json();
 }
 
-export async function fetchMovie(id: string): Promise<Movie> {
-    const res = await fetch(`http://backend:3000/movies/${id}`, { cache: "no-store" });
+export async function fetchPaginatedMovies(page: number, language: string = "ru"): Promise<Movie[]> {
+    const res = await fetch(`http://localhost:3000/movies/?page=${page}&language=${language}`, {
+        cache: "no-store",
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch paginated movies");
+    const data = await res.json();
+    return data.movies;
+}
+
+export async function fetchMovie(id: string, language: string = "ru"): Promise<Movie> {
+    const res = await fetch(`http://backend:3000/movies/${id}&language=${language}`, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch movie");
     console.log('movie found');
     return res.json();

@@ -23,13 +23,14 @@ app.use('/profile', authMiddleware, profileRouter);
 app.use('/movies', moviesRouter)
 
 app.get("/tv", async (req: Request, res: Response): Promise<void> => {
-    const apiKey = process.env.TMDB_API_KEY;
+    const apiKey = process.env.TMDB_API_KEY
+    const language = (req.query.language as string) || "en";
     if (!apiKey) {
         res.status(500).json({ error: "TMDB API key is missing" });
         return;
     }
     const response = await fetch(
-        `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=vote_average.desc&vote_count.gte=100&page=1`
+        `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=${language}&sort_by=vote_average.desc&vote_count.gte=100&page=1`
     );
     if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
     const data = (await response.json()) as ITmdbResponse;
@@ -38,12 +39,14 @@ app.get("/tv", async (req: Request, res: Response): Promise<void> => {
 
 app.get("/anime", async (req: Request, res: Response): Promise<void> => {
     const apiKey = process.env.TMDB_API_KEY;
+    const language = (req.query.language as string) || "en";
+
     if (!apiKey) {
         res.status(500).json({ error: "TMDB API key is missing" });
         return;
     }
     const response = await fetch(
-        `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=vote_average.desc&vote_count.gte=50&with_genres=${MovieGenre.Animation}&with_keywords=210024&page=1`
+        `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${language}&sort_by=vote_average.desc&vote_count.gte=50&with_genres=${MovieGenre.Animation}&with_keywords=210024&page=1`
     );
     if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
     const data = (await response.json()) as ITmdbResponse;

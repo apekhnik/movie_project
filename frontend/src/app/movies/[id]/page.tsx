@@ -1,4 +1,3 @@
-import { Movie } from "@/types/types";
 import {fetchMovie} from "@/lib/api";
 
 // Тип для параметров страницы
@@ -28,6 +27,7 @@ export default async function MovieDetailPage({ params }: MoviePageParams) {
                     <p className="text-sm text-gray-500">Vote Count: {movie.vote_count}</p>
                 </div>
             </div>
+            КНОПКА
         </div>
     );
 }
