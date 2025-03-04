@@ -1,11 +1,11 @@
 import { Movie } from "@/types/types";
-import {fetchTopTvShows} from "@/lib/api"; // Переименуем Movie в TvShow, если нужно
+import {fetchTvShows} from "@/lib/api";
 
 
 export default async function TopRatedTvShowsPage() {
     let topShows: Movie[] = [];
     try {
-        topShows = await fetchTopTvShows();
+        topShows = await fetchTvShows();
     } catch (error) {
         //TODO
         console.error("Error fetching top TV shows:", error);

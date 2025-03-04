@@ -79,6 +79,12 @@ export async function fetchAnime(): Promise<Movie[]> {
     return res.json();
 }
 
+export async function fetchTvShows(): Promise<Movie[]> {
+    const res = await fetch("http://backend:3000/tv", { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch top anime");
+    return res.json();
+}
+
 export async function fetchAnimeById(id: string): Promise<Movie> {
     const res = await fetch(`http://backend:3000/anime/${id}`, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch top anime");
