@@ -7,7 +7,6 @@ const moviesRouter =  Router();
 
 moviesRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
     const apiKey = process.env.TMDB_API_KEY;
-    const language = (req.query.language as string) || "en";
     const { id } = req.params;
 
     if (!apiKey) {
@@ -20,7 +19,7 @@ moviesRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
     }
 
     const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=${language}`
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`
     );
     if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
     const data = (await response.json()) as ITmdbMovie;
@@ -29,8 +28,7 @@ moviesRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
 
 moviesRouter.get("/", async (req: Request, res: Response): Promise<void> => {
     const apiKey = process.env.TMDB_API_KEY;
-    const page = parseInt(req.query.page as string) || 1;
-    const language = (req.query.language as string) || "en";
+    const page = parseInt(req.query.page as string) || 1; // Номер страницы из query
     const perPage = 10; // 10 фильмов на странице
 
     if (!apiKey) {
@@ -40,7 +38,7 @@ moviesRouter.get("/", async (req: Request, res: Response): Promise<void> => {
 
     try {
         const response = await fetch(
-            `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=${language}&page=${page}`
+            `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=en-US&page=${page}`
         );
         if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
         const data = (await response.json()) as ITmdbResponse;

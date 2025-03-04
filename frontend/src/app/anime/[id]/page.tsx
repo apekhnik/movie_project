@@ -1,17 +1,17 @@
-import { Movie } from "@/types/types";
-import { fetchMovie } from "@/lib/api"; // Убедись, что fetchMovie экспортируется корректно
+import {fetchAnimeById, fetchMovie} from "@/lib/api";
+import {Movie} from "@/types/types"; // Убедись, что fetchMovie экспортируется корректно
 
 // Тип для параметров серверного компонента
-type MoviePageParams = {
+type AnimePageParams = {
     params: Promise<{ id: string }>;
 };
 
-export default async function MovieDetailPage({ params }: MoviePageParams) {
+export default async function AnimeDetailPage({ params }: AnimePageParams) {
     const { id } = await params; // Разворачиваем Promise на сервере
     let movie: Movie;
 
     try {
-        movie = await fetchMovie(id); // Загружаем фильм на сервере
+        movie = await fetchAnimeById(id); // Загружаем фильм на сервере
     } catch (error: any) {
         return (
             <div className="container mx-auto p-4">

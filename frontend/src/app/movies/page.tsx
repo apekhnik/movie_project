@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { Movie } from "@/types/types";
 import ReactPaginate from "react-paginate";
 import {MovieCard} from "@/app/movies/MovieCard";
-import {fetchPaginatedMovies} from "@/lib/api";
 
 async function fetchTopMovies(page: number): Promise<Movie[]> {
     const res = await fetch(`http://localhost:3000/movies?page=${page}`, {
@@ -21,7 +20,7 @@ export default function MoviesPage() {
     const [currentPage, setCurrentPage] = useState(0);
 
     useEffect(() => {
-        fetchPaginatedMovies(currentPage + 1).then(setMovies).catch(console.error);
+        fetchTopMovies(currentPage + 1).then(setMovies).catch(console.error);
     }, [currentPage]);
 
     const handlePageClick = (event: { selected: number }) => {

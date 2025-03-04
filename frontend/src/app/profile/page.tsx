@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuthStore } from "@/lib/store";
 import { fetchProfile } from "@/lib/api";
 import Link from "next/link";
-import {MovieCard} from "@/app/movies/MovieCard";
+import {useAuthStore} from "@/lib/store";
 
 export default function ProfilePage() {
     const { isAuthenticated } = useAuthStore();
@@ -17,6 +16,7 @@ export default function ProfilePage() {
                 .then((data) => setProfile(data))
                 .catch((err) => setError(err.message));
         }
+        console.log(profile)
     }, [isAuthenticated]);
 
     if (!isAuthenticated) {
@@ -54,7 +54,18 @@ export default function ProfilePage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {profile.movieList.map((movie, index) => (
-                        <MovieCard key={movie.id} movie={movie} />
+                        <Link href={`/movies/${movie.id}`} key={index} className="block">
+                            <div className="border p-4 rounded shadow hover:shadow-lg transition-shadow">
+                                <img
+                                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                    alt={movie.title}
+                                    className="w-full h-64 object-cover mb-2"
+                                />
+                                <h3 className="text-xl font-semibold">{movie.title}</h3>
+                                <p className="text-gray-600 truncate">{movie.overview}</p>
+                                <p className="text-sm text-gray-500">Rating: {movie.vote_average}</p>
+                            </div>
+                        </Link>
                     ))}
                 </div>
             )}

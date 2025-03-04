@@ -1,4 +1,4 @@
-import { fetchTopMovies } from "@/lib/api";
+import { fetchMovies } from "@/lib/api";
 import {MovieInitializer} from "@/components/MovieInitializer";
 import {SearchMovies} from "@/components/SearchMovies";
 
