@@ -2,7 +2,7 @@
 
 import {Movie} from "@/types/types";
 import {useMovieStore} from "@/lib/store";
-import {MovieCard} from "@/app/movies/MovieCard";
+import {MovieCard} from "@/components/MovieCard";
 
 export function SearchMovies() {
     const { movies, searchQuery, searchResults, setSearchQuery, setSearchResults } = useMovieStore();

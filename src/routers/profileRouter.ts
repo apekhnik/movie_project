@@ -1,10 +1,63 @@
 import { Router, Request, Response } from "express";
 import prisma from "../prismaClient.js";
-import {ITmdbMovie} from "../types/types.js";
-import {Prisma} from "@prisma/client";
-import {log} from "node:util";
+import {ITmdbMovie, WatchStatus} from "../types/types.js";
+import { Prisma } from "@prisma/client";
 
 const profileRouter =  Router();
+
+profileRouter.patch('/update-status', async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.id;
+    const { movieId, status } = req.body;
+
+    if (!userId) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+    }
+    if (!movieId || isNaN(Number(movieId))) {
+        res.status(400).json({ error: "Valid movie ID is required" });
+        return;
+    }
+    if (!Object.values(WatchStatus).includes(status)) {
+        res.status(400).json({ error: "Invalid watch status" });
+        return;
+    }
+
+    try {
+        // Получаем текущий movieList пользователя
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { movieList: true },
+        });
+
+        if (!user) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        }
+
+        const updatedMovieList = user.movieList.map((movieStr) => {
+            const movie: ITmdbMovie = JSON.parse(movieStr as string);
+            if (movie.id === movieId) {
+                return JSON.stringify({ ...movie, status }); // Сериализуем только изменённый фильм
+            }
+            return movieStr; // Остальные остаются строками
+        });
+
+        // Заменяем весь movieList новым массивом
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                movieList: {
+                    set: updatedMovieList as Prisma.InputJsonValue[], // Явное приведение к InputJsonValue[]
+                },
+            },
+        });
+
+        res.json({ message: "Status updated successfully" });
+    } catch (error) {
+        console.error("Error updating movie status:", error);
+        res.status(500).json({ error: "Failed to update status" });
+    }
+})
 
 profileRouter.get('/', async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.id; // Доступен благодаря authMiddleware
@@ -34,7 +87,7 @@ profileRouter.get('/', async (req: Request, res: Response): Promise<void> => {
 
 profileRouter.post('/', async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.id;
-    const { id } = req.body; // Теперь ожидаем только id
+    const { id, status = WatchStatus.WATCH_LATER } = req.body; // Теперь ожидаем только id
 
     if (!userId) {
         res.status(401).json({ error: "Unauthorized" });
@@ -51,11 +104,16 @@ profileRouter.post('/', async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
+    if (!Object.values(WatchStatus).includes(status)) {
+        res.status(400).json({ error: "Invalid watch status" });
+        return;
+    }
+
     try {
-        // Запрашиваем фильм с TMDb на сервере
         const response = await fetch(
             `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`
         );
+
         if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
         const movie: ITmdbMovie = await response.json();
 
@@ -63,11 +121,17 @@ profileRouter.post('/', async (req: Request, res: Response): Promise<void> => {
 
 
         // Добавляем фильм в профиль пользователя
-         await prisma.user.update({
+        const movieWithDate = {
+            ...movie,
+            addedAt: new Date().toISOString(),
+            status
+        };
+
+        const user = await prisma.user.update({
             where: { id: userId },
             data: {
                 movieList: {
-                    push: JSON.stringify(movie), // Добавляем объект фильма в массив movieList
+                    push: JSON.stringify(movieWithDate), // Сохраняем объект с датой как строку
                 },
             },
         });

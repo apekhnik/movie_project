@@ -73,3 +73,9 @@ export enum TvGenre {
     WarAndPolitics = 10768,
     Western = 37,           // Совпадает с фильмами
 }
+
+export enum WatchStatus {
+    WATCHING = "watching",      // Смотрю сейчас
+    WATCH_LATER = "watch_later", // Посмотреть позже
+    WATCHED = "watched",        // Просмотрено
+}

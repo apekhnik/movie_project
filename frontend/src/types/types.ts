@@ -14,3 +14,9 @@ export interface Movie {
     video: boolean;
     vote_count: number;
 }
+
+export enum WatchStatus {
+    WATCHING = "watching",      // Смотрю сейчас
+    WATCH_LATER = "watch_later", // Посмотреть позже
+    WATCHED = "watched",        // Просмотрено
+}

@@ -3,7 +3,28 @@
 import { useState, useEffect } from "react";
 import { fetchProfile } from "@/lib/api";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import {WatchStatus} from "@/types/types";
 import {useAuthStore} from "@/lib/store";
+
+
+// Функция для обновления статуса (добавим позже на сервер)
+async function updateMovieStatus(userId: number, movieId: number, status: WatchStatus) {
+    const { token } = useAuthStore.getState();
+    if (!token) throw new Error("No token available");
+
+    const res = await fetch("http://localhost:3000/profile/update-status", {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ movieId, status }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to update status");
+}
 
 export default function ProfilePage() {
     const { isAuthenticated } = useAuthStore();
@@ -16,8 +37,25 @@ export default function ProfilePage() {
                 .then((data) => setProfile(data))
                 .catch((err) => setError(err.message));
         }
-        console.log(profile)
     }, [isAuthenticated]);
+
+    const handleStatusChange = async (movieId: number, newStatus: WatchStatus) => {
+        if (!profile) return;
+
+        try {
+            await updateMovieStatus(profile.id, movieId, newStatus);
+            // Обновляем локальное состояние
+            setProfile({
+                ...profile,
+                movieList: profile.movieList.map((movie) =>
+                    movie.id === movieId ? { ...movie, status: newStatus } : movie
+                ),
+            });
+            toast.success("Status updated!");
+        } catch (err: any) {
+            toast.error(err.message);
+        }
+    };
 
     if (!isAuthenticated) {
         return <div className="container mx-auto p-4">Please log in to view your profile.</div>;
@@ -54,8 +92,8 @@ export default function ProfilePage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {profile.movieList.map((movie, index) => (
-                        <Link href={`/movies/${movie.id}`} key={index} className="block">
-                            <div className="border p-4 rounded shadow hover:shadow-lg transition-shadow">
+                        <div key={index} className="border p-4 rounded shadow hover:shadow-lg transition-shadow">
+                            <Link href={`/movies/${movie.id}`} className="block">
                                 <img
                                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                                     alt={movie.title}
@@ -64,8 +102,23 @@ export default function ProfilePage() {
                                 <h3 className="text-xl font-semibold">{movie.title}</h3>
                                 <p className="text-gray-600 truncate">{movie.overview}</p>
                                 <p className="text-sm text-gray-500">Rating: {movie.vote_average}</p>
+                            </Link>
+                            <div className="mt-2">
+                                <label htmlFor={`status-${movie.id}`} className="text-sm text-gray-700 mr-2">
+                                    Status:
+                                </label>
+                                <select
+                                    id={`status-${movie.id}`}
+                                    value={movie.status || WatchStatus.WATCH_LATER} // Значение по умолчанию
+                                    onChange={(e) => handleStatusChange(movie.id, e.target.value as WatchStatus)}
+                                    className="p-1 border rounded text-gray-700"
+                                >
+                                    <option value={WatchStatus.WATCHING}>Watching</option>
+                                    <option value={WatchStatus.WATCH_LATER}>Watch Later</option>
+                                    <option value={WatchStatus.WATCHED}>Watched</option>
+                                </select>
                             </div>
-                        </Link>
+                        </div>
                     ))}
                 </div>
             )}

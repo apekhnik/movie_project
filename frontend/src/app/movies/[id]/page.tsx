@@ -1,5 +1,6 @@
 import { Movie } from "@/types/types";
-import { fetchMovie } from "@/lib/api"; // Убедись, что fetchMovie экспортируется корректно
+import { fetchMovie } from "@/lib/api";
+import AddToProfileButton from "@/components/common/AddToProfileButton"; // Убедись, что fetchMovie экспортируется корректно
 
 // Тип для параметров серверного компонента
 type MoviePageParams = {
@@ -39,7 +40,7 @@ export default async function MovieDetailPage({ params }: MoviePageParams) {
                     <p className="text-sm text-gray-500">Vote Count: {movie.vote_count}</p>
                 </div>
             </div>
-            {/*<AddToProfileButton id={movie.id} /> /!* Клиентская кнопка *!/*/}
+            <AddToProfileButton id={movie.id}/>
         </div>
     );
 }
