@@ -1,25 +1,17 @@
 "use client";
 
-import { Movie } from "@/types/types";
-import { addMovieToProfileById} from "@/lib/api";
-import { useState } from "react";
+import React from "react";
+import {ContentType, Movie} from "@/types/types";
 import Link from "next/link";
+import AddToProfileButton from "@/components/common/AddToProfileButton";
 
-export function MovieCard({ movie }: { movie: Movie }) {
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+interface MovieCardProps {
+    movie: Movie;
+    contentType: ContentType;
+}
 
-    const handleAddToProfile = async () => {
-        setError(null);
-        setSuccess(null);
-        try {
-            await addMovieToProfileById(movie.id);
-            setSuccess("Movie added to profile!");
-        } catch (err: unknown) {
-            //TODO
-            setError(err instanceof Error ? err.message : "Failed to add movie");
-        }
-    };
+export function MovieCard(props: MovieCardProps): React.ReactElement {
+    const {movie, contentType = ContentType.MOVIE} = props;
 
     const posterUrl = movie.poster_path
         ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
@@ -27,21 +19,15 @@ export function MovieCard({ movie }: { movie: Movie }) {
 
     return (
         <div className="border p-4 rounded shadow">
-            <Link href={`/movies/${movie.id}`} className="block">
+            <Link href={`/${contentType}/${props.movie.id}`} className="block">
                 <img src={posterUrl} alt={movie.title} className="w-full h-64 object-cover mb-2" />
                 <h2 className="text-xl font-semibold">{movie.title}</h2>
                 <p className="text-gray-600 truncate">{movie.overview}</p>
                 <p className="text-sm text-gray-500">Rating: {movie.vote_average}</p>
                 <p className="text-sm text-gray-500">Release: {movie.release_date}</p>
             </Link>
-            <button
-                onClick={handleAddToProfile}
-                className="mt-2 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
-            >
-                Add to Profile
-            </button>
-            {success && <p className="mt-2 text-green-600">{success}</p>}
-            {error && <p className="mt-2 text-red-600">{error}</p>}
+
+            <AddToProfileButton id={movie.id} type={props.contentType}/>
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import {useAuthStore} from "@/lib/store";
-import {Movie} from "@/types/types";
+import {ContentType, Movie} from "@/types/types";
 
 interface LoginResponse {
     token: string;
@@ -52,7 +52,6 @@ export async function fetchProfile(): Promise<{ id: number; login: string; movie
 
     const data = await res.json();
 
-    console.log(data)
     if (!res.ok) throw new Error(data.error || "Failed to fetch profile");
     return data;
 }
@@ -91,7 +90,30 @@ export async function fetchAnimeById(id: string): Promise<Movie> {
     return res.json();
 }
 
-export async function addMovieToProfileById(id: number): Promise<void> {
+export async function fetchTvShowById(id: string): Promise<Movie> {
+    const res = await fetch(`http://backend:3000/tv/${id}`, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to fetch tvshow");
+    return res.json();
+}
+
+export async function removeMovieFromProfile(id: number): Promise<void> {
+    const { token } = useAuthStore.getState();
+    if (!token) throw new Error("No token available");
+
+    const res = await fetch("http://localhost:3000/profile/remove", {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to remove movie");
+}
+
+export async function addMovieToProfileById(id: number, type: ContentType): Promise<void> {
     const { token } = useAuthStore.getState();
     if (!token) throw new Error("No token available");
 
@@ -101,7 +123,7 @@ export async function addMovieToProfileById(id: number): Promise<void> {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({ id }), // Отправляем только id
+        body: JSON.stringify({ id, type }), // Отправляем только id
     });
 
     const data = await res.json();

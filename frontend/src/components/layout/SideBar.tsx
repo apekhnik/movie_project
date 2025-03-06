@@ -24,9 +24,11 @@ export function Sidebar() {
                 <h2 className="text-xl font-bold">Menu</h2>
                 <ul className="mt-4">
                     <li><Link href="/" className="block py-2">Home</Link></li>
-                    <li><Link href="/movies" className="block py-2">Movies</Link></li>
+                    <li><Link href="/profile" className="block py-2">Profile</Link></li>
+                    <li><Link href="/movie" className="block py-2">Movies</Link></li>
                     <li><Link href="/tv" className="block py-2">TV Shows</Link></li>
                     <li><Link href="/anime" className="block py-2">Anime</Link></li>
+
                     {isAuthenticated ? (
                         <li>
                             <button onClick={logout} className="block py-2 text-red-300">

@@ -1,5 +1,6 @@
-import { Movie } from "@/types/types";
+import {ContentType, Movie} from "@/types/types";
 import {fetchTvShows} from "@/lib/api";
+import {MovieCard} from "@/components/MovieCard";
 
 
 export default async function TopRatedTvShowsPage() {
@@ -22,16 +23,7 @@ export default async function TopRatedTvShowsPage() {
             <h1 className="text-3xl font-bold mb-4">Top 10 TV Shows</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {topShows.map((show) => (
-                    <div key={show.id} className="border p-4 rounded shadow">
-                        <img
-                            src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
-                            alt={show.title}
-                            className="w-full h-64 object-cover mb-2"
-                        />
-                        <h2 className="text-xl font-semibold">{show.title}</h2>
-                        <p className="text-gray-600 truncate">{show.overview}</p>
-                        <p className="text-sm text-gray-500">Rating: {show.vote_average}</p>
-                    </div>
+                    <MovieCard key={show.id} movie={show} contentType={ContentType.TV}/>
                 ))}
             </div>
         </div>

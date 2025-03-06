@@ -1,18 +1,17 @@
-import {fetchAnimeById} from "@/lib/api";
+import {fetchTvShowById} from "@/lib/api";
 import {ContentType, Movie} from "@/types/types";
-import AddToProfileButton from "@/components/common/AddToProfileButton"; // Убедись, что fetchMovie экспортируется корректно
+import AddToProfileButton from "@/components/common/AddToProfileButton";
 
-// Тип для параметров серверного компонента
-type AnimePageParams = {
+type TvShowPageParams = {
     params: Promise<{ id: string }>;
 };
 
-export default async function AnimeDetailPage({ params }: AnimePageParams) {
-    const { id } = await params; // Разворачиваем Promise на сервере
+export default async function TvShowDetailPage({ params }: TvShowPageParams) {
+    const { id } = await params;
     let movie: Movie;
 
     try {
-        movie = await fetchAnimeById(id); // Загружаем фильм на сервере
+        movie = await fetchTvShowById(id);
     } catch (error: any) {
         return (
             <div className="container mx-auto p-4">
@@ -40,7 +39,7 @@ export default async function AnimeDetailPage({ params }: AnimePageParams) {
                     <p className="text-sm text-gray-500">Vote Count: {movie.vote_count}</p>
                 </div>
             </div>
-            <AddToProfileButton id={movie.id} type={ContentType.ANIME}/>
+            <AddToProfileButton id={movie.id} type={ContentType.TV}/>
         </div>
     );
 }

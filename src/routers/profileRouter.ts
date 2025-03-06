@@ -1,7 +1,7 @@
-import { Router, Request, Response } from "express";
+import {Request, Response, Router} from "express";
 import prisma from "../prismaClient.js";
-import {ITmdbMovie, WatchStatus} from "../types/types.js";
-import { Prisma } from "@prisma/client";
+import {ContentType, ITmdbMovie, WatchStatus} from "../types/types.js";
+import {Prisma} from "@prisma/client";
 
 const profileRouter =  Router();
 
@@ -37,9 +37,9 @@ profileRouter.patch('/update-status', async (req: Request, res: Response): Promi
         const updatedMovieList = user.movieList.map((movieStr) => {
             const movie: ITmdbMovie = JSON.parse(movieStr as string);
             if (movie.id === movieId) {
-                return JSON.stringify({ ...movie, status }); // Сериализуем только изменённый фильм
+                return JSON.stringify({ ...movie, status });
             }
-            return movieStr; // Остальные остаются строками
+            return movieStr;
         });
 
         // Заменяем весь movieList новым массивом
@@ -57,10 +57,57 @@ profileRouter.patch('/update-status', async (req: Request, res: Response): Promi
         console.error("Error updating movie status:", error);
         res.status(500).json({ error: "Failed to update status" });
     }
-})
+});
+
+profileRouter.patch('/remove', async (req: Request, res: Response): Promise<void> => {
+    const userId = req.user?.id;
+    const { id } = req.body;
+
+    if (!userId) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+    }
+
+    if (!id || isNaN(Number(id))) {
+        res.status(400).json({ error: "Valid movie ID is required" });
+        return;
+    }
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { movieList: true },
+        });
+
+        if (!user) {
+            res.status(404).json({ error: "User not found" });
+            return;
+        }
+
+        // Фильтруем movieList, убирая фильм с указанным movieId
+        const updatedMovieList = user.movieList.filter((movieStr) => {
+            const movie = JSON.parse(movieStr as string);
+            return movie.id !== id;
+        });
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                movieList: {
+                    set: updatedMovieList as Prisma.InputJsonValue[],
+                },
+            },
+        });
+
+        res.json({ message: "Movie removed successfully" });
+    } catch (error) {
+        console.error("Error removing movie:", error);
+        res.status(500).json({ error: "Failed to remove movie" });
+    }
+});
 
 profileRouter.get('/', async (req: Request, res: Response): Promise<void> => {
-    const userId = req.user?.id; // Доступен благодаря authMiddleware
+    const userId = req.user?.id;
     if (!userId) {
         res.status(401).json({ error: "Unauthorized" });
         return;
@@ -87,8 +134,8 @@ profileRouter.get('/', async (req: Request, res: Response): Promise<void> => {
 
 profileRouter.post('/', async (req: Request, res: Response): Promise<void> => {
     const userId = req.user?.id;
-    const { id, status = WatchStatus.WATCH_LATER } = req.body; // Теперь ожидаем только id
-
+    const { id, status = WatchStatus.WATCH_LATER, type = ContentType.SERIES } = req.body; // Теперь ожидаем только id
+    console.log(id, status, type);
     if (!userId) {
         res.status(401).json({ error: "Unauthorized" });
         return;
@@ -110,8 +157,9 @@ profileRouter.post('/', async (req: Request, res: Response): Promise<void> => {
     }
 
     try {
+        const contentType = type === ContentType.SERIES ? ContentType.SERIES : ContentType.MOVIE;
         const response = await fetch(
-            `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`
+            `https://api.themoviedb.org/3/${contentType}/${id}?api_key=${apiKey}&language=en-US`
         );
 
         if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
@@ -124,7 +172,8 @@ profileRouter.post('/', async (req: Request, res: Response): Promise<void> => {
         const movieWithDate = {
             ...movie,
             addedAt: new Date().toISOString(),
-            status
+            status,
+            type
         };
 
         const user = await prisma.user.update({

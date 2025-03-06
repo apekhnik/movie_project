@@ -1,4 +1,4 @@
-import { Movie } from "@/types/types";
+import {ContentType, Movie} from "@/types/types";
 import { fetchMovie } from "@/lib/api";
 import AddToProfileButton from "@/components/common/AddToProfileButton"; // Убедись, что fetchMovie экспортируется корректно
 
@@ -40,7 +40,7 @@ export default async function MovieDetailPage({ params }: MoviePageParams) {
                     <p className="text-sm text-gray-500">Vote Count: {movie.vote_count}</p>
                 </div>
             </div>
-            <AddToProfileButton id={movie.id}/>
+            <AddToProfileButton id={movie.id} type={ContentType.MOVIE}/>
         </div>
     );
 }

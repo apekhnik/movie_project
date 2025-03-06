@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Movie } from "@/types/types";
+import {ContentType, Movie} from "@/types/types";
 import ReactPaginate from "react-paginate";
 import {MovieCard} from "@/components/MovieCard";
 
@@ -32,7 +32,11 @@ export default function MoviesPage() {
             <h1 className="text-3xl font-bold mb-4">Top Movies</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {movies.map((movie) => (
-                    <MovieCard key={movie.id} movie={movie} />
+                    <MovieCard
+                        key={movie.id}
+                        movie={movie}
+                        contentType={ContentType.MOVIE}
+                    />
                 ))}
             </div>
             <ReactPaginate

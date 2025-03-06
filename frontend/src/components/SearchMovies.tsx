@@ -1,15 +1,11 @@
 "use client";
 
-import {Movie} from "@/types/types";
+import {ContentType, Movie} from "@/types/types";
 import {useMovieStore} from "@/lib/store";
 import {MovieCard} from "@/components/MovieCard";
 
 export function SearchMovies() {
-    const { movies, searchQuery, searchResults, setSearchQuery, setSearchResults } = useMovieStore();
-
-    const filteredMovies = movies.filter((movie: Movie) =>
-        movie.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useMovieStore();
 
     const searchMovies = async () => {
         const res = await fetch(`http://localhost:3000/search?q=${searchQuery}`);
@@ -27,7 +23,7 @@ export function SearchMovies() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {searchResults.length > 0 ? (
                         searchResults.map((movie: Movie) => (
-                            <MovieCard key={movie.id} movie={movie} />
+                            <MovieCard key={movie.id} movie={movie} contentType={ContentType.MOVIE}/>
                         ))
                     ) : (
                         <p>No search results yet.</p>
@@ -43,15 +39,6 @@ export function SearchMovies() {
                     placeholder="Filter top movies..."
                     className="border p-2 mb-4 w-full"
                 />
-                {/*<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">*/}
-                {/*    {filteredMovies.length > 0 ? (*/}
-                {/*        filteredMovies.map((movie) => (*/}
-                {/*            <MovieCard key={movie.id} movie={movie} />*/}
-                {/*        ))*/}
-                {/*    ) : (*/}
-                {/*        <p>No movies match your filter.</p>*/}
-                {/*    )}*/}
-                {/*</div>*/}
             </div>
         </div>
     );

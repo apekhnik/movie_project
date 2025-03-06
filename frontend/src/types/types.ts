@@ -15,6 +15,12 @@ export interface Movie {
     vote_count: number;
 }
 
+export enum ContentType {
+    ANIME = "anime",
+    MOVIE = "movie",
+    TV = "tv",
+}
+
 export enum WatchStatus {
     WATCHING = "watching",      // Смотрю сейчас
     WATCH_LATER = "watch_later", // Посмотреть позже

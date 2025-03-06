@@ -9,6 +9,7 @@ import {authMiddleware} from "./middleware/authMiddleware.js";
 import profileRouter from "./routers/profileRouter.js";
 import moviesRouter from "./routers/moviesRouter.js";
 import animeRouter from "./routers/animeRouter.js";
+import tvShowRouter from "./routers/tvShowRouter.js";
 
 config(); // Загружаем .env
 
@@ -25,19 +26,7 @@ app.use('/movies', moviesRouter)
 
 app.use('/anime', animeRouter)
 
-app.get("/tv", async (req: Request, res: Response): Promise<void> => {
-    const apiKey = process.env.TMDB_API_KEY;
-    if (!apiKey) {
-        res.status(500).json({ error: "TMDB API key is missing" });
-        return;
-    }
-    const response = await fetch(
-        `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-US&sort_by=vote_average.desc&vote_count.gte=100&page=1`
-    );
-    if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
-    const data = (await response.json()) as ITmdbResponse;
-    res.json(data.results.slice(0, 10));
-});
+app.use('/tv', tvShowRouter);
 
 app.get("/search", async (req: Request, res: Response): Promise<void> => {
     const apiKey = process.env.TMDB_API_KEY;
