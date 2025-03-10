@@ -31,7 +31,7 @@ export default async function MovieDetailPage({ params }: MoviePageParams) {
                 backgroundPosition: "center",
             }}
         >
-            <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+            <div className="absolute inset-0 bg-black bg-opacity-70"></div>
                 <div className="container mx-auto p-4 relative z-10">
                 <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
                 <div className="flex flex-col md:flex-row gap-6">
