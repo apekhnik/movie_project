@@ -8,6 +8,7 @@ const moviesRouter =  Router();
 moviesRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
     const apiKey = process.env.TMDB_API_KEY;
     const { id } = req.params;
+    const language = (req.query.language as string) || "ru"
 
     if (!apiKey) {
         res.status(500).json({ error: "TMDB API key is missing" });
@@ -19,7 +20,7 @@ moviesRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
     }
 
     const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=${language}`
     );
     if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
     const data = (await response.json()) as ITmdbMovie;
@@ -28,8 +29,9 @@ moviesRouter.get("/:id", async (req: Request, res: Response): Promise<void> => {
 
 moviesRouter.get("/", async (req: Request, res: Response): Promise<void> => {
     const apiKey = process.env.TMDB_API_KEY;
-    const page = parseInt(req.query.page as string) || 1; // Номер страницы из query
-    const perPage = 10; // 10 фильмов на странице
+    const page = parseInt(req.query.page as string) || 1;
+    const perPage = 10;
+    const language = (req.query.language as string) || "ru"
 
     if (!apiKey) {
         res.status(500).json({ error: "TMDB API key is missing" });
@@ -38,7 +40,7 @@ moviesRouter.get("/", async (req: Request, res: Response): Promise<void> => {
 
     try {
         const response = await fetch(
-            `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=en-US&page=${page}`
+            `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&language=${language}&page=${page}`
         );
         if (!response.ok) throw new Error(`TMDb API error: ${response.statusText}`);
         const data = (await response.json()) as ITmdbResponse;

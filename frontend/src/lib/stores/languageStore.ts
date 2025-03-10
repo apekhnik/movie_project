@@ -6,6 +6,6 @@ interface LanguageState {
 }
 
 export const useLanguageStore = create<LanguageState>((set) => ({
-    language: "en", // По умолчанию английский
+    language: "ru",
     setLanguage: (lang) => set({ language: lang }),
 }));

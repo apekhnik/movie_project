@@ -4,23 +4,19 @@ import { useState, useEffect } from "react";
 import {ContentType, Movie} from "@/types/types";
 import ReactPaginate from "react-paginate";
 import {MovieCard} from "@/components/MovieCard";
+import {fetchMoviesPages} from "@/lib/api";
+import {useLanguageStore} from "@/lib/stores/languageStore";
 
-async function fetchTopMovies(page: number): Promise<Movie[]> {
-    const res = await fetch(`http://localhost:3000/movies?page=${page}`, {
-        cache: "no-store",
-    });
-    if (!res.ok) throw new Error("Failed to fetch top movies");
-    const data = await res.json();
-    return data.movies;
-}
+
 
 export default function MoviesPage() {
+    const { language } = useLanguageStore()
     const [movies, setMovies] = useState<Movie[]>([]);
     const [pageCount, setPageCount] = useState(10); // 100 фильмов / 10 = 10 страниц
     const [currentPage, setCurrentPage] = useState(0);
 
     useEffect(() => {
-        fetchTopMovies(currentPage + 1).then(setMovies).catch(console.error);
+        fetchMoviesPages(currentPage + 1, language).then(setMovies).catch(console.error);
     }, [currentPage]);
 
     const handlePageClick = (event: { selected: number }) => {

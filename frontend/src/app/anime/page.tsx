@@ -1,34 +1,53 @@
-import {ContentType, Movie} from "@/types/types";
-import {fetchAnime} from "@/lib/api";
-import {MovieCard} from "@/components/MovieCard";
+"use client";
 
-export default async function TopAnimePage() {
-    let topAnime: Movie[] = [];
-    try {
-        topAnime = await fetchAnime();
-    } catch (error) {
-        //TODO
-        console.error("Error fetching top anime:", error);
-        return (
-            <div className="container mx-auto p-4">
-                <h1 className="text-3xl font-bold mb-4">Top 10 Anime</h1>
-                <p className="text-red-600">Failed to load anime. Please try again later.</p>
-            </div>
-        );
-    }
+import { useState, useEffect } from "react";
+import {ContentType, Movie} from "@/types/types";
+import ReactPaginate from "react-paginate";
+import {MovieCard} from "@/components/MovieCard";
+import {fetchAnimePages} from "@/lib/api";
+import {useLanguageStore} from "@/lib/stores/languageStore";
+
+
+
+export default function MoviesPage() {
+    const { language } = useLanguageStore()
+    const [movies, setMovies] = useState<Movie[]>([]);
+    const [pageCount, setPageCount] = useState(10); // 100 фильмов / 10 = 10 страниц
+    const [currentPage, setCurrentPage] = useState(0);
+
+    useEffect(() => {
+        fetchAnimePages(currentPage + 1, language).then(setMovies).catch(console.error);
+    }, [currentPage]);
+
+    const handlePageClick = (event: { selected: number }) => {
+        setCurrentPage(event.selected);
+    };
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-4">Top 10 Anime</h1>
+            <h1 className="text-3xl font-bold mb-4">Top Movies</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {topAnime.map((anime) => (
+                {movies.map((movie) => (
                     <MovieCard
-                        key={anime.id}
-                        movie={anime}
+                        key={movie.id}
+                        movie={movie}
                         contentType={ContentType.ANIME}
                     />
                 ))}
             </div>
+            <ReactPaginate
+                breakLabel="..."
+                nextLabel="Next"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={5}
+                pageCount={pageCount}
+                previousLabel="Previous"
+                containerClassName="flex gap-2 mt-8 justify-center"
+                pageClassName="p-2 bg-blue-500 text-white rounded"
+                activeClassName="bg-blue-700"
+                previousClassName="p-2 bg-blue-500 text-white rounded"
+                nextClassName="p-2 bg-blue-500 text-white rounded"
+            />
         </div>
     );
 }
