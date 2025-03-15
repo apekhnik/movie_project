@@ -4,11 +4,12 @@ import { useState } from "react";
 import { addMovieToProfileById, removeMovieFromProfile } from "@/lib/api";
 import { toast } from "react-toastify";
 import { useMovieStore } from "@/lib/stores/movieStore";
-import {ContentType} from "@/types/types";
+import { ContentType } from "@/types/types";
+import styled from "styled-components";
 
 interface AddToProfileButtonProps {
     id: number;
-    type: ContentType
+    type: ContentType;
 }
 
 export default function AddToProfileButton({ id, type }: AddToProfileButtonProps) {
@@ -16,7 +17,9 @@ export default function AddToProfileButton({ id, type }: AddToProfileButtonProps
     const { movieIds, addMovieId, removeMovieId } = useMovieStore();
     const isAdded = movieIds.includes(id);
 
-    const handleAdd = async () => {
+    const handleAdd = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        event.stopPropagation(); // Предотвращаем всплытие события
         setIsLoading(true);
         try {
             await addMovieToProfileById(id, type);
@@ -29,7 +32,9 @@ export default function AddToProfileButton({ id, type }: AddToProfileButtonProps
         }
     };
 
-    const handleRemove = async () => {
+    const handleRemove = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        event.stopPropagation(); // Предотвращаем всплытие события
         setIsLoading(true);
         try {
             await removeMovieFromProfile(id);
@@ -43,14 +48,43 @@ export default function AddToProfileButton({ id, type }: AddToProfileButtonProps
     };
 
     return (
-        <button
+        <StyledButton
             onClick={isAdded ? handleRemove : handleAdd}
             disabled={isLoading}
-            className={`mt-2 p-2 rounded text-white ${
-                isAdded ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600"
-            } disabled:bg-gray-400`}
+            isAdded={isAdded}
+            aria-label={isAdded ? "Remove from profile" : "Add to profile"} // Доступность
         >
-            {isLoading ? "Processing..." : isAdded ? "Remove" : "Add to Profile"}
-        </button>
+            {isLoading ? "..." : isAdded ? "-" : "+"}
+        </StyledButton>
     );
 }
+
+const StyledButton = styled.button<{ isAdded: boolean }>`
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: ${(props) => (props.isAdded ? "#ef4444" : "#3b82f6")};
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+    &:hover {
+        background: ${(props) => (props.isAdded ? "#dc2626" : "#2563eb")};
+        transform: scale(1.1);
+    }
+
+    &:disabled {
+        background: #6b7280;
+        cursor: not-allowed;
+        transform: none;
+    }
+`;

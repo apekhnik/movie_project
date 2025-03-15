@@ -1,6 +1,7 @@
 import {useAuthStore} from "@/lib/store";
 import {ContentType, Movie} from "@/types/types";
 import {useLanguageStore} from "@/lib/stores/languageStore";
+import {log} from "node:util";
 
 interface LoginResponse {
     token: string;
@@ -92,9 +93,10 @@ export async function fetchAnimePages(page: number, language: string): Promise<M
     return data.movies;
 }
 
-export async function fetchAnimeById(id: string): Promise<Movie> {
-    const { language } = useLanguageStore.getState();
-    const res = await fetch(`http://backend:3000/anime/${id}?language=${language}`, { cache: "no-store" });
+export async function fetchAnimeById(id: string, language: string): Promise<Movie> {
+
+    console.log(language, 'api')
+    const res = await fetch(`http://localhost:3000/anime/${id}?language=${language}`, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch top anime");
     return res.json();
 }

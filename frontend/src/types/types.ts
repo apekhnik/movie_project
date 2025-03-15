@@ -26,3 +26,8 @@ export enum WatchStatus {
     WATCH_LATER = "watch_later", // Посмотреть позже
     WATCHED = "watched",        // Просмотрено
 }
+
+export enum TransitionDirection {
+    LEFT = "left",
+    RIGHT = "right",
+}

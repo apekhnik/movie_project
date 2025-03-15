@@ -17,7 +17,7 @@ export default function MoviesPage() {
 
     useEffect(() => {
         fetchMoviesPages(currentPage + 1, language).then(setMovies).catch(console.error);
-    }, [currentPage]);
+    }, [currentPage, language]);
 
     const handlePageClick = (event: { selected: number }) => {
         setCurrentPage(event.selected);

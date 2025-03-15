@@ -10,6 +10,6 @@ export function LoadingWrapper({ children }: { children: React.ReactNode }) {
             <p className="text-xl">Loading...</p>
         </div>
     ) : (
-        <main className="p-4 flex-1">{children}</main>
+        <main className="flex-1">{children}</main>
     );
 }

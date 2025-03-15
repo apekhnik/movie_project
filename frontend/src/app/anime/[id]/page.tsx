@@ -1,23 +1,51 @@
-import {fetchAnimeById} from "@/lib/api";
-import {ContentType, Movie} from "@/types/types";
-import AddToProfileButton from "@/components/common/AddToProfileButton"; // Убедись, что fetchMovie экспортируется корректно
+"use client";
 
-// Тип для параметров серверного компонента
-type AnimePageParams = {
-    params: Promise<{ id: string }>;
-};
+import { useState, useEffect } from "react";
+import { fetchAnimeById } from "@/lib/api";
+import { ContentType, Movie } from "@/types/types";
+import AddToProfileButton from "@/components/common/AddToProfileButton";
+import { useParams } from "next/navigation";
+import {useLanguageStore} from "@/lib/stores/languageStore";
 
-export default async function AnimeDetailPage({ params }: AnimePageParams) {
-    const { id } = await params; // Разворачиваем Promise на сервере
-    let movie: Movie;
+export default function AnimeDetailPage() {
+    const { id } = useParams(); // Получаем id из URL
+    const language = useLanguageStore((state) => state.language); // Получаем язык из Zustand
+    const [movie, setMovie] = useState<Movie | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    try {
-        movie = await fetchAnimeById(id); // Загружаем фильм на сервере
-    } catch (error: any) {
+    // Функция для загрузки данных
+    const fetchData = async () => {
+
+    };
+
+    // Загружаем данные при монтировании и при смене языка
+    useEffect(() => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            fetchAnimeById(id as string, language).then(setMovie)
+        } catch (err: any) {
+            setError(err.message || "Failed to load movie");
+            setMovie(null);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [id, language]); // Зависимости: id и language
+
+    if (isLoading) {
+        return (
+            <div className="container mx-auto p-4">
+                <h1 className="text-3xl font-bold mb-4">Loading...</h1>
+            </div>
+        );
+    }
+
+    if (error || !movie) {
         return (
             <div className="container mx-auto p-4">
                 <h1 className="text-3xl font-bold mb-4">Movie Details</h1>
-                <p className="text-red-600">Failed to load movie: {error.message}</p>
+                <p className="text-red-600">Failed to load movie: {error}</p>
             </div>
         );
     }
@@ -40,7 +68,7 @@ export default async function AnimeDetailPage({ params }: AnimePageParams) {
                     <p className="text-sm text-gray-500">Vote Count: {movie.vote_count}</p>
                 </div>
             </div>
-            <AddToProfileButton id={movie.id} type={ContentType.ANIME}/>
+            <AddToProfileButton id={movie.id} type={ContentType.ANIME} />
         </div>
     );
 }
