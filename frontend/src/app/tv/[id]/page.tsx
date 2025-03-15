@@ -1,45 +1,91 @@
-import {fetchTvShowById} from "@/lib/api";
-import {ContentType, Movie} from "@/types/types";
-import AddToProfileButton from "@/components/common/AddToProfileButton";
+"use client";
 
-type TvShowPageParams = {
-    params: Promise<{ id: string }>;
-};
+import { useState, useEffect } from "react";
+import { fetchTvShowById } from "@/lib/api";
+import { ContentType, TVShow } from "@/types/types";
+import AddButton from "@/components/common/movie-card/AddButton";
+import { useParams } from "next/navigation";
+import { useLanguageStore } from "@/lib/stores/languageStore";
+import {
+    StyledDetailPageWrapper,
+    StyledDetailPageContainer,
+    StyledDetailPageDescription,
+    StyledDetailPageError,
+    StyledDetailPageFlexContainer,
+    StyledDetailPageImage,
+    StyledDetailPageMeta,
+    StyledDetailPageTextBlock,
+    StyledDetailPageTitle,
+} from "@/app/styles";
 
-export default async function TvShowDetailPage({ params }: TvShowPageParams) {
-    const { id } = await params;
-    let movie: Movie;
+export default function TvDetailPage() {
+    const { id } = useParams();
+    const language = useLanguageStore((state) => state.language);
+    const [tvShow, setTvShow] = useState<TVShow | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
-    try {
-        movie = await fetchTvShowById(id);
-    } catch (error: any) {
+    useEffect(() => {
+        const loadTvShow = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const data = await fetchTvShowById(id as string, language);
+                setTvShow(data);
+            } catch (err: any) {
+                setError(err.message || "Failed to load TV show");
+                setTvShow(null);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadTvShow();
+    }, [id, language]);
+
+    if (isLoading) {
         return (
-            <div className="container mx-auto p-4">
-                <h1 className="text-3xl font-bold mb-4">Movie Details</h1>
-                <p className="text-red-600">Failed to load movie: {error.message}</p>
-            </div>
+            <StyledDetailPageWrapper>
+                <StyledDetailPageContainer>
+                    <StyledDetailPageTitle>Loading...</StyledDetailPageTitle>
+                </StyledDetailPageContainer>
+            </StyledDetailPageWrapper>
+        );
+    }
+
+    if (error || !tvShow) {
+        return (
+            <StyledDetailPageWrapper>
+                <StyledDetailPageContainer>
+                    <StyledDetailPageTitle>TV Show Details</StyledDetailPageTitle>
+                    <StyledDetailPageError>Failed to load TV show: {error}</StyledDetailPageError>
+                </StyledDetailPageContainer>
+            </StyledDetailPageWrapper>
         );
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
-            <div className="flex flex-col md:flex-row gap-6">
-                <img
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title}
-                    className="w-full md:w-1/3 h-auto rounded"
-                />
-                <div className="flex-1">
-                    <p className="text-gray-600 mb-4">{movie.overview}</p>
-                    <p className="text-sm text-gray-500">Release Date: {movie.release_date}</p>
-                    <p className="text-sm text-gray-500">Rating: {movie.vote_average}</p>
-                    <p className="text-sm text-gray-500">Original Language: {movie.original_language}</p>
-                    <p className="text-sm text-gray-500">Popularity: {movie.popularity}</p>
-                    <p className="text-sm text-gray-500">Vote Count: {movie.vote_count}</p>
-                </div>
-            </div>
-            <AddToProfileButton id={movie.id} type={ContentType.TV}/>
-        </div>
+        <StyledDetailPageWrapper>
+            <StyledDetailPageContainer>
+                <StyledDetailPageTitle>{tvShow.name}</StyledDetailPageTitle>
+                <StyledDetailPageFlexContainer>
+                    <StyledDetailPageImage
+                        src={`https://image.tmdb.org/t/p/w500${tvShow.poster_path}`}
+                        alt={tvShow.name}
+                    />
+                    <StyledDetailPageTextBlock>
+                        <StyledDetailPageDescription>{tvShow.overview}</StyledDetailPageDescription>
+                        <StyledDetailPageMeta>First Air Date: {tvShow.first_air_date}</StyledDetailPageMeta>
+                        <StyledDetailPageMeta>Rating: {tvShow.vote_average}</StyledDetailPageMeta>
+                        <StyledDetailPageMeta>Original Language: {tvShow.original_language}</StyledDetailPageMeta>
+                        <StyledDetailPageMeta>Popularity: {tvShow.popularity}</StyledDetailPageMeta>
+                        <StyledDetailPageMeta>Vote Count: {tvShow.vote_count}</StyledDetailPageMeta>
+                        <StyledDetailPageMeta>Seasons: {tvShow.number_of_seasons}</StyledDetailPageMeta>
+                        <StyledDetailPageMeta>Episodes: {tvShow.number_of_episodes}</StyledDetailPageMeta>
+                    </StyledDetailPageTextBlock>
+                </StyledDetailPageFlexContainer>
+                <AddButton id={tvShow.id} type={ContentType.TV} />
+            </StyledDetailPageContainer>
+        </StyledDetailPageWrapper>
     );
 }

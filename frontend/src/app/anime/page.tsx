@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { ContentType, Movie } from "@/types/types";
 import ReactPaginate from "react-paginate";
-import { MovieCard } from "@/components/MovieCard";
+import { MovieCard } from "@/components/common/movie-card/MovieCard";
 import { fetchAnimePages } from "@/lib/api";
 import { useLanguageStore } from "@/lib/stores/languageStore";
+import {StyledMoviesCards, StyledMoviesPageWrapper} from "@/app/styles";
+
 
 export default function MoviesPage() {
     const { language } = useLanguageStore();
@@ -23,12 +25,8 @@ export default function MoviesPage() {
 
     return (
         <div className="min-h-screen text-white relative overflow-hidden">
-            <div
-                className="p-4 relative z-10"
-                style={{ minHeight: "calc(100vh - 64px)" }} // Высота минус Header (64px примерная)
-            >
-                <h1 className="text-3xl font-bold mb-4">Top Movies</h1>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-x-1 gap-y-4 justify-items-center items-center">
+            <StyledMoviesPageWrapper>
+                <StyledMoviesCards>
                     {movies.map((movie) => (
                         <MovieCard
                             key={movie.id}
@@ -36,7 +34,7 @@ export default function MoviesPage() {
                             contentType={ContentType.ANIME}
                         />
                     ))}
-                </div>
+                </StyledMoviesCards>
                 <ReactPaginate
                     breakLabel="..."
                     nextLabel="Next"
@@ -50,7 +48,7 @@ export default function MoviesPage() {
                     previousClassName="p-2 bg-blue-500 text-white rounded"
                     nextClassName="p-2 bg-blue-500 text-white rounded"
                 />
-            </div>
+            </StyledMoviesPageWrapper>
         </div>
     );
 }

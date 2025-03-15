@@ -12,7 +12,7 @@ interface AddToProfileButtonProps {
     type: ContentType;
 }
 
-export default function AddToProfileButton({ id, type }: AddToProfileButtonProps) {
+export default function AddButton({ id, type }: AddToProfileButtonProps) {
     const [isLoading, setIsLoading] = useState(false);
     const { movieIds, addMovieId, removeMovieId } = useMovieStore();
     const isAdded = movieIds.includes(id);
@@ -52,7 +52,6 @@ export default function AddToProfileButton({ id, type }: AddToProfileButtonProps
             onClick={isAdded ? handleRemove : handleAdd}
             disabled={isLoading}
             isAdded={isAdded}
-            aria-label={isAdded ? "Remove from profile" : "Add to profile"} // Доступность
         >
             {isLoading ? "..." : isAdded ? "-" : "+"}
         </StyledButton>
@@ -61,7 +60,7 @@ export default function AddToProfileButton({ id, type }: AddToProfileButtonProps
 
 const StyledButton = styled.button<{ isAdded: boolean }>`
     position: absolute;
-    top: 10px;
+    bottom: 10px;
     right: 10px;
     width: 40px;
     height: 40px;

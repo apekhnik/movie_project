@@ -1,5 +1,5 @@
 import {useAuthStore} from "@/lib/store";
-import {ContentType, Movie} from "@/types/types";
+import {ContentType, Movie, TVShow} from "@/types/types";
 import {useLanguageStore} from "@/lib/stores/languageStore";
 import {log} from "node:util";
 
@@ -77,9 +77,8 @@ export async function fetchMoviesPages(page: number, language: string): Promise<
     return data.movies;
 }
 
-export async function fetchMovie(id: string): Promise<Movie> {
-    const { language } = useLanguageStore.getState();
-    const res = await fetch(`http://backend:3000/movies/${id}?language=${language}`,
+export async function fetchMovieById(id: string, language: string): Promise<Movie> {
+    const res = await fetch(`http://localhost:3000/movies/${id}?language=${language}`,
         { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch movie");
 
@@ -94,8 +93,6 @@ export async function fetchAnimePages(page: number, language: string): Promise<M
 }
 
 export async function fetchAnimeById(id: string, language: string): Promise<Movie> {
-
-    console.log(language, 'api')
     const res = await fetch(`http://localhost:3000/anime/${id}?language=${language}`, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch top anime");
     return res.json();
@@ -109,10 +106,8 @@ export async function fetchTvShowsPages(page: number, language: string): Promise
     return data.movies;
 }
 
-export async function fetchTvShowById(id: string): Promise<Movie> {
-    const { language } = useLanguageStore.getState();
-
-    const res = await fetch(`http://backend:3000/tv/${id}?language=${language}`, { cache: "no-store" });
+export async function fetchTvShowById(id: string,  language: string): Promise<TVShow> {
+    const res = await fetch(`http://localhost:3000/tv/${id}?language=${language}`, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to fetch tvshow");
     return res.json();
 }

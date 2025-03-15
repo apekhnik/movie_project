@@ -15,6 +15,20 @@ export interface Movie {
     vote_count: number;
 }
 
+export interface TVShow {
+    id: number;
+    name: string; // Используем name вместо title
+    overview: string;
+    poster_path: string | null;
+    first_air_date: string; // Используем first_air_date вместо release_date
+    vote_average: number;
+    vote_count: number;
+    popularity: number;
+    original_language: string;
+    number_of_seasons: number; // Количество сезонов
+    number_of_episodes: number; // Количество эпизодов
+}
+
 export enum ContentType {
     ANIME = "anime",
     MOVIE = "movie",

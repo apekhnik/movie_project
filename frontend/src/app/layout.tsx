@@ -5,6 +5,7 @@ import {LoadingWrapper} from "@/components/layout/LoadingWrapper";
 import {ToastContainer} from "react-toastify";
 import { AuthProvider } from "@/components/AuthProvider";
 import Header from "@/components/layout/header/Header";
+import StyledComponentsRegistry from "@/app/StyledComponentsRegistry";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,11 @@ export default function RootLayout({
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden relative">
         <Header />
           <AuthProvider>
-              <LoadingWrapper>{children}</LoadingWrapper>
+              <LoadingWrapper>
+                  <StyledComponentsRegistry>
+                      {children}
+                  </StyledComponentsRegistry>
+              </LoadingWrapper>
           </AuthProvider>
           <ToastContainer
               position="bottom-right" // Внизу справа
