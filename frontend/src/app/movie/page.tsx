@@ -37,16 +37,21 @@ export default function MoviesPage() {
                 </StyledMoviesCards>
                 <ReactPaginate
                     breakLabel="..."
-                    nextLabel="Next"
+                    nextLabel="→"
                     onPageChange={handlePageClick}
                     pageRangeDisplayed={5}
                     pageCount={pageCount}
-                    previousLabel="Previous"
-                    containerClassName="flex gap-2 mt-12 justify-center"
-                    pageClassName="p-2 bg-blue-500 text-white rounded"
-                    activeClassName="bg-blue-700"
-                    previousClassName="p-2 bg-blue-500 text-white rounded"
-                    nextClassName="p-2 bg-blue-500 text-white rounded"
+                    previousLabel="←"
+                    containerClassName="flex gap-2 mt-16 justify-center items-center"
+                    pageClassName="w-8 h-8 flex items-center justify-center bg-[rgba(55,65,81,0.2)] border border-gray-300 rounded-full text-white hover:bg-[rgba(75,85,99,0.3)] transition-colors"
+                    activeClassName="bg-[rgba(75,85,99,0.4)] border-gray-200"
+                    previousClassName="w-8 h-8 flex items-center justify-center bg-[rgba(55,65,81,0.2)] border border-gray-300 rounded-full text-white hover:bg-[rgba(75,85,99,0.3)] transition-colors"
+                    nextClassName="w-8 h-8 flex items-center justify-center bg-[rgba(55,65,81,0.2)] border border-gray-300 rounded-full text-white hover:bg-[rgba(75,85,99,0.3)] transition-colors"
+                    pageLinkClassName="w-full h-full flex items-center justify-center" // Расширяем кликабельную область
+                    activeLinkClassName="w-full h-full flex items-center justify-center" // Для активной страницы
+                    previousLinkClassName="w-full h-full flex items-center justify-center" // Для стрелки влево
+                    nextLinkClassName="w-full h-full flex items-center justify-center" // Для стрелки вправо
+                    renderOnZeroPageCount={null}
                 />
             </StyledMoviesPageWrapper>
         </div>

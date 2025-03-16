@@ -58,7 +58,9 @@ export default function AddButton({ id, type }: AddToProfileButtonProps) {
     );
 }
 
-const StyledButton = styled.button<{ isAdded: boolean }>`
+const StyledButton = styled.button.withConfig({
+    shouldForwardProp: (prop) => prop !== "isAdded", // Исключаем isLogout из DOM
+})<{ isAdded: boolean }>`
     position: absolute;
     bottom: 10px;
     right: 10px;

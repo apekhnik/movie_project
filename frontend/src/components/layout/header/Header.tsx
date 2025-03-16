@@ -1,67 +1,81 @@
 "use client";
 
-import styled from "styled-components";
 import Link from "next/link";
-import {useLanguageStore} from "@/lib/stores/languageStore";
+import { useLanguageStore } from "@/lib/stores/languageStore";
+import styled from "styled-components";
+import {useAuthStore} from "@/lib/store";
 
+// Стили
 const HeaderWrapper = styled.header`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  height: 64px;
+  background: #1f2937;
+  color: white;
   z-index: 20;
-  padding: 16px;
-  background-color: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
 `;
 
 const Nav = styled.nav`
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  width: 100%;
 `;
 
 const Logo = styled.a`
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  color: white;
-  text-decoration: none;
 `;
 
 const NavLinks = styled.div`
   display: flex;
-  gap: 16px;
   align-items: center;
-
-  a {
-    color: white;
-    text-decoration: none;
-    &:hover {
-      color: #d1d5db;
-    }
-  }
+  gap: 1rem;
 `;
 
 const LanguageSelect = styled.select`
-  background-color: rgba(255, 255, 255, 0.1);
+  background: #374151; /* gray-700 */
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 4px;
-  padding: 4px 8px;
-  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  border: none;
+`;
 
-  option {
-    background-color: #1f2937;
-    color: white;
+// Обновлённые стили для кнопки Login/Logout
+const AuthButton = styled.button.withConfig({
+    shouldForwardProp: (prop) => prop !== "isLogout",
+})<{ isLogout: boolean }>`
+  background: ${(props) => (props.isLogout ? "#4b5563" : "#4b5563")}; /* gray-600 для обоих состояний */
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+
+  &:hover {
+    background: ${(props) => (props.isLogout ? "#6b7280" : "#6b7280")}; /* gray-500 при наведении */
   }
 `;
 
 export default function Header() {
     const { language, setLanguage } = useLanguageStore();
+    const { isAuthenticated, logout } = useAuthStore();
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newLanguage = event.target.value;
         setLanguage(newLanguage);
+    };
+
+    const handleAuthAction = () => {
+        if (isAuthenticated) {
+            logout();
+        }
     };
 
     return (
@@ -87,6 +101,15 @@ export default function Header() {
                         <option value="en">English</option>
                         <option value="ru">Русский</option>
                     </LanguageSelect>
+                    {isAuthenticated ? (
+                        <AuthButton isLogout={true} onClick={handleAuthAction}>
+                            Logout
+                        </AuthButton>
+                    ) : (
+                        <Link href="/login" passHref legacyBehavior>
+                            <AuthButton isLogout={false}>Login</AuthButton>
+                        </Link>
+                    )}
                 </NavLinks>
             </Nav>
         </HeaderWrapper>

@@ -12,6 +12,11 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      backgroundColor: {
+        'gray-700/20': 'rgba(55, 65, 81, 0.2)',
+        'gray-600/30': 'rgba(75, 85, 99, 0.3)',
+        'gray-600/40': 'rgba(75, 85, 99, 0.4)',
+      }
     },
   },
   plugins: [],
