@@ -37,7 +37,7 @@ export default function RootLayout({
           <AuthProvider>
               <LoadingWrapper>
                   <StyledComponentsRegistry>
-                      {children}
+                          {children}
                   </StyledComponentsRegistry>
               </LoadingWrapper>
           </AuthProvider>

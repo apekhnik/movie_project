@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import {PrismaClient, User} from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import prisma from "../prismaClient.js";
@@ -9,13 +9,16 @@ const authRouter = Router();
 
 // Регистрация пользователя
 authRouter.post("/registration", async (req: Request, res: Response): Promise<void> => {
-    const { login, password } = req.body;
-
+    const { login, password, username } = req.body;
+    let name = 'User';
     if (!login || !password) {
         res.status(400).json({ error: "Login and password are required" });
         return;
     }
 
+    if(!username) {
+         name = `${name}-${Math.random()}`;
+    }
     try {
         const existingUser = await prisma.user.findUnique({ where: { login } });
         if (existingUser) {
@@ -28,15 +31,15 @@ authRouter.post("/registration", async (req: Request, res: Response): Promise<vo
             data: {
                 login,
                 password: hashedPassword,
+                username: name,
                 movieList: [],
             },
         });
-
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "secret", {
             expiresIn: "24h",
         });
 
-        res.status(201).json({ token, userId: user.id });
+        res.status(201).json({ token, userId: user.id, username: user.username });
     } catch (error) {
         console.error("Registration error:", error);
         res.status(500).json({ error: "Failed to register user" });

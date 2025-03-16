@@ -115,7 +115,7 @@ profileRouter.get('/', async (req: Request, res: Response): Promise<void> => {
 
     const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { id: true, login: true, movieList: true },
+        select: { id: true, login: true, movieList: true, username: true },
     });
 
     if (!user) {
@@ -128,6 +128,7 @@ profileRouter.get('/', async (req: Request, res: Response): Promise<void> => {
     res.json({
         id: user.id,
         login: user.login,
+        username: user.username,
         movieList: parsedMovieList,
     });
 })

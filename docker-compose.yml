@@ -11,8 +11,13 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    mem_limit: 1g        # Ограничение в 1 ГБ
-    mem_reservation: 512m  # Минимальный резерв (опционально)
+    mem_limit: 1g
+    mem_reservation: 512m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
@@ -21,19 +26,22 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    volumes:
+      - ./prisma:/app/prisma
     restart: unless-stopped
-    mem_limit: 512m      # Ограничение в 512 МБ
+    mem_limit: 512m
 
   frontend:
     build:
-      context: ./frontend  # Папка с Next.js проектом
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3001:3000"  # Next.js внутри на 3000, снаружи на 3001
+      - "3001:3000"
     depends_on:
       - backend
-    mem_limit: 256m      # Ограничение в 256 МБ
+    mem_limit: 256m
 
 volumes:
   postgres_data:

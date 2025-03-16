@@ -3,6 +3,7 @@
 import {ContentType, Movie} from "@/types/types";
 import {useMovieStore} from "@/lib/store";
 import {MovieCard} from "@/components/common/movie-card/MovieCard";
+import {SearchInput} from "@/components/common/search/SearchComponents";
 
 export function SearchMovies() {
     const { searchQuery, searchResults, setSearchQuery, setSearchResults } = useMovieStore();
@@ -32,12 +33,10 @@ export function SearchMovies() {
             </div>
             <div className="mb-8">
                 <h2 className="text-2xl mb-2">Filter Top Movies</h2>
-                <input
-                    type="text"
+                <SearchInput
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Filter top movies..."
-                    className="border p-2 mb-4 w-full"
+                    placeholder={'search'}
                 />
             </div>
         </div>

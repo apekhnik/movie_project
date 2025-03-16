@@ -20,8 +20,9 @@ interface UiState {
 interface AuthState {
     token: string | null;
     userId: number | null;
+    username: string | null;
     isAuthenticated: boolean;
-    login: (token: string, userId: number) => void;
+    login: (token: string, userId: number, username: string) => void;
     logout: () => void;
     verifyToken: () => Promise<void>;
 }
@@ -32,8 +33,14 @@ export const useAuthStore = create<AuthState>()(
             token: null,
             userId: null,
             isAuthenticated: false,
-            login: (token, userId) => set({ token, userId, isAuthenticated: true }),
-            logout: () => set({ token: null, userId: null, isAuthenticated: false }),
+            username: null,
+            login: (token, userId, username) => set({
+                token,
+                userId,
+                isAuthenticated: true,
+                username,
+            }),
+            logout: () => set({ token: null, userId: null, isAuthenticated: false, username: null }),
             verifyToken: async () => {
                 const { token } = get();
                 if (!token) {

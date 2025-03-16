@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Link from "next/link";
 
 export const StyledSearchBar = styled.div`
     height: 50px;
@@ -108,7 +109,7 @@ export const StyledDetailPageError = styled.p`
 export const StyledPagination = styled.div`
   display: flex;
   gap: 0.5rem; /* gap-2 */
-  margin-top: 4rem; /* mt-16 */
+  margin-top: 1rem; /* mt-16 */
   justify-content: center;
   align-items: center;
 `;
@@ -162,4 +163,163 @@ export const BreakLabel = styled.span`
   justify-content: center;
   width: 2rem;
   height: 2rem;
+`;
+
+
+
+export const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+    height: calc(100vh);
+    padding-top: 64px;
+    background: #1f2937; /* Фон в стиле изображения */
+`;
+
+export const ContentWrapper = styled.div`
+  display: flex;
+  width: 100%;
+    height: 90%;
+  max-width: 900px; /* Ограничим максимальную ширину */
+  background: #2d3748; /* Тёмный фон формы */
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+export const LeftPanel = styled.div`
+  flex: 1;
+  min-height: 500px; /* Зарезервируем место для будущего слайдера */
+  background: #4a3c7a; /* Фиолетовый фон левой панели */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem;
+  color: white;
+`;
+
+export const Logo = styled.div`
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+`;
+
+export const Slogan = styled.div`
+  font-size: 1.25rem;
+  opacity: 0.8;
+`;
+
+export const RightPanel = styled.div`
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: white;
+`;
+
+export const Title = styled.h1`
+  font-size: 2rem;
+  margin-bottom: 1rem;
+`;
+
+export const SubText = styled.p`
+  font-size: 0.9rem;
+  color: #a0aec0;
+  margin-bottom: 1rem;
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  background: #4a5568;
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 1rem;
+
+  &::placeholder {
+    color: #a0aec0;
+    opacity: 0.7;
+  }
+
+  &:focus {
+    outline: none;
+    background: #4a5568;
+  }
+`;
+
+export const CheckboxWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+export const Checkbox = styled.input`
+  accent-color: #a0aec0;
+`;
+
+export const CheckboxLabel = styled.label`
+  font-size: 0.9rem;
+  color: #a0aec0;
+`;
+
+export const Button = styled.button`
+  width: 100%;
+  padding: 0.75rem;
+  background: #6b46c1; /* Фиолетовая кнопка */
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #5a36a4;
+  }
+`;
+
+export const SocialLogin = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+`;
+
+export const SocialButton = styled.button`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+  padding: 0.5rem 3rem;
+  border: 1px solid #6b46c1;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #4a5568;
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+  }
+`;
+
+export const BackLink = styled(Link)`
+  display: inline-block;
+  margin-top: 1rem;
+  color: #a0aec0;
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;

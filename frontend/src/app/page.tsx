@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import {TransitionDirection} from "@/types/types";
 import styled from "styled-components";
 import {StyledSearchBar} from "@/app/styles";
+import {SearchMovies} from "@/components/SearchMovies";
 
 export default function Home() {
     const backdrops = [
@@ -88,31 +89,7 @@ export default function Home() {
             />
             {/* Полупрозрачный слой */}
             <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-            {/*<div className="container mx-auto p-4 relative z-10 h-1/2">*/}
-            {/*    <h1 className="text-4xl font-bold mb-4">Welcome to Movie App</h1>*/}
-            {/*    <p className="text-gray-200 mb-4">*/}
-            {/*        Explore the best movies, anime, and series. Start your journey now!*/}
-            {/*    </p>*/}
-            {/*    <div className="flex gap-4 mb-4">*/}
-            {/*        <button*/}
-            {/*            onClick={handlePrev}*/}
-            {/*            className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"*/}
-            {/*            disabled={isTransitioning}*/}
-            {/*        >*/}
-            {/*            Previous*/}
-            {/*        </button>*/}
-            {/*        <button*/}
-            {/*            onClick={handleNext}*/}
-            {/*            className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"*/}
-            {/*            disabled={isTransitioning}*/}
-            {/*        >*/}
-            {/*            Next*/}
-            {/*        </button>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-            <StyledSearchBar>
-                <input type="text"/>
-            </StyledSearchBar>
+            <SearchMovies/>
         </div>
     );
 }

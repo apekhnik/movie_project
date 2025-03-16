@@ -39,7 +39,7 @@ const getContentPath = (movie: any) => {
 export default function ProfilePage() {
     const { isAuthenticated } = useAuthStore();
     const { setMovieIds } = useMovieStore();
-    const [profile, setProfile] = useState<{ id: number; login: string; movieList: any[] } | null>(null);
+    const [profile, setProfile] = useState<{ id: number; login: string; username: string; movieList: any[] } | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -97,6 +97,7 @@ export default function ProfilePage() {
             <div className="mb-6">
                 <p className="text-lg">ID: {profile.id}</p>
                 <p className="text-lg">Login: {profile.login}</p>
+                <p className="text-lg">Login: {profile.username}</p>
             </div>
             <h2 className="text-2xl font-semibold mb-4">Your Movie List</h2>
             {profile.movieList.length === 0 ? (
