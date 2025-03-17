@@ -7,22 +7,30 @@ import { MovieCard } from "@/components/common/movie-card/MovieCard";
 import { fetchAnimePages } from "@/lib/api";
 import { useLanguageStore } from "@/lib/stores/languageStore";
 import {ArrowButton, BreakLabel, StyledMoviesCards, StyledMoviesPageWrapper, StyledPagination} from "@/app/styles";
+import {useUiStore} from "@/lib/store";
 
 
 export default function MoviesPage() {
     const { language } = useLanguageStore();
+    const {isLoading, setIsLoading} = useUiStore();
     const [movies, setMovies] = useState<Movie[]>([]);
     const [pageCount, setPageCount] = useState(10); // 100 фильмов / 10 = 10 страниц
     const [currentPage, setCurrentPage] = useState(0);
-
+    console.log(isLoading)
     useEffect(() => {
+        setIsLoading(true);
         fetchAnimePages(currentPage + 1, language).then(setMovies).catch(console.error);
+        setIsLoading(false);
     }, [currentPage, language]);
 
     const handlePageClick = (event: { selected: number }) => {
         setCurrentPage(event.selected);
     };
 
+    //TODO make loader cOMponent
+    if(isLoading) {
+        return <div className='bg-amber-700 h-4/5'>LOADING</div>
+    }
     return (
         <div className="min-h-screen text-white relative overflow-hidden">
             <StyledMoviesPageWrapper>

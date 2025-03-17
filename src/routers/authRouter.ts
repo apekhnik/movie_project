@@ -1,5 +1,4 @@
 import { Router, Request, Response } from "express";
-import {PrismaClient, User} from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import prisma from "../prismaClient.js";

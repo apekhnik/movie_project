@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useMovieStore } from "@/lib/stores/movieStore";
 import { ContentType } from "@/types/types";
 import styled from "styled-components";
+import {useUiStore} from "@/lib/store";
 
 interface AddToProfileButtonProps {
     id: number;
@@ -13,7 +14,7 @@ interface AddToProfileButtonProps {
 }
 
 export default function AddButton({ id, type }: AddToProfileButtonProps) {
-    const [isLoading, setIsLoading] = useState(false);
+    const {isLoading, setIsLoading} = useUiStore();
     const { movieIds, addMovieId, removeMovieId } = useMovieStore();
     const isAdded = movieIds.includes(id);
 
@@ -25,10 +26,9 @@ export default function AddButton({ id, type }: AddToProfileButtonProps) {
             await addMovieToProfileById(id, type);
             addMovieId(id);
             toast.success("Movie added to profile!");
+            setIsLoading(false);
         } catch (err: any) {
             toast.error(err.message);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -40,10 +40,11 @@ export default function AddButton({ id, type }: AddToProfileButtonProps) {
             await removeMovieFromProfile(id);
             removeMovieId(id);
             toast.success("Movie removed from profile!");
+
+            setIsLoading(false);
+
         } catch (err: any) {
             toast.error(err.message);
-        } finally {
-            setIsLoading(false);
         }
     };
 

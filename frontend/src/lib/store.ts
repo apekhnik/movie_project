@@ -15,6 +15,7 @@ interface UiState {
     isLoading: boolean;
     isSidebarOpen: boolean;
     toggleSidebar: () => void;
+    setIsLoading: (isLoading: boolean) => void;
 }
 
 interface AuthState {
@@ -70,9 +71,14 @@ export const useAuthStore = create<AuthState>()(
 );
 
 export const useUiStore = create<UiState>((set) => ({
-    isLoading: false,
+    isLoading: true,
     isSidebarOpen: true,
-    toggleLoading:() => set((state) => ({ isLoading: !state.isLoading })),
+    setIsLoading: (isLoading: boolean) => {
+        set((state) => {
+            console.log("in the store", isLoading);
+            return { ...state, isLoading };
+        });
+    },
     toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
 }));
 

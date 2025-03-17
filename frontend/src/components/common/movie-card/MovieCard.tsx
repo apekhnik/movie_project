@@ -5,6 +5,7 @@ import { ContentType, Movie } from "@/types/types";
 import Link from "next/link";
 import AddButton from "@/components/common/movie-card/AddButton";
 import {StyledMovieCard, StyledMovieCardButtonWrapper, StyledMovieCardDescription, StyledMovieCardImg, StyledMovieCardText, StyledMovieCardTitle} from "@/components/common/movie-card/styles";
+import {useUiStore} from "@/lib/store";
 
 interface MovieCardProps {
     movie: Movie;

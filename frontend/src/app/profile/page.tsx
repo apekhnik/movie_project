@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useMovieStore } from "@/lib/stores/movieStore";
 import { toast } from "react-toastify";
 import { ContentType, WatchStatus } from "@/types/types";
-import {useAuthStore} from "@/lib/store";
+import {useAuthStore, useUiStore} from "@/lib/store";
 
 async function updateMovieStatus(userId: number, movieId: number, status: WatchStatus) {
     const { token } = useAuthStore.getState();
@@ -38,18 +38,23 @@ const getContentPath = (movie: any) => {
 
 export default function ProfilePage() {
     const { isAuthenticated } = useAuthStore();
+    const {isLoading, setIsLoading} = useUiStore();
     const { setMovieIds } = useMovieStore();
     const [profile, setProfile] = useState<{ id: number; login: string; username: string; movieList: any[] } | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (isAuthenticated) {
+            setIsLoading(true);
+
             fetchProfile()
                 .then((data) => {
                     setProfile(data);
                     setMovieIds(data.movieList.map((movie: any) => movie.id));
                 })
                 .catch((err) => setError(err.message));
+
+            setIsLoading(false);
         }
     }, [isAuthenticated, setMovieIds]);
 

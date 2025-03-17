@@ -7,34 +7,42 @@ import AddButton from "@/components/common/movie-card/AddButton";
 import { useParams } from "next/navigation";
 import { useLanguageStore } from "@/lib/stores/languageStore";
 import {StyledDetailPageWrapper, StyledDetailPageContainer, StyledDetailPageDescription, StyledDetailPageError, StyledDetailPageFlexContainer, StyledDetailPageImage, StyledDetailPageMeta, StyledDetailPageTextBlock, StyledDetailPageTitle} from "@/app/styles";
+import {useUiStore} from "@/lib/store";
 
 
 
 export default function AnimeDetailPage() {
     const { id } = useParams();
+    const isLoading = useUiStore((state) => state.isLoading);
+
+    const { setIsLoading } = useUiStore();
     const language = useLanguageStore((state) => state.language);
     const [movie, setMovie] = useState<Movie | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         setIsLoading(true);
+
+        console.log(isLoading, 'before')
         setError(null);
         try {
             fetchAnimeById(id as string, language).then(setMovie);
+
+            setIsLoading(false);
+            console.log(isLoading, 'after')
         } catch (err: any) {
             setError(err.message || "Failed to load movie");
             setMovie(null);
-        } finally {
-            setIsLoading(false);
         }
     }, [id, language]);
+
 
     if (isLoading) {
         return (
             <StyledDetailPageWrapper>
                 <StyledDetailPageContainer>
-                    <StyledDetailPageTitle>Loading...</StyledDetailPageTitle>
+                    <StyledDetailPageTitle>LOADING</StyledDetailPageTitle>
+                    <StyledDetailPageError>LOADING</StyledDetailPageError>
                 </StyledDetailPageContainer>
             </StyledDetailPageWrapper>
         );

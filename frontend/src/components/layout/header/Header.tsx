@@ -69,13 +69,7 @@ export const StyledUserInfo = styled.div`
 `
 
 export default function Header() {
-    const { language, setLanguage } = useLanguageStore();
     const { isAuthenticated, logout } = useAuthStore();
-
-    const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newLanguage = event.target.value;
-        setLanguage(newLanguage);
-    };
 
     const handleAuthAction = () => {
         if (isAuthenticated) {

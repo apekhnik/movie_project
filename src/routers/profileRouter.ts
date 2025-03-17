@@ -34,7 +34,8 @@ profileRouter.patch('/update-status', async (req: Request, res: Response): Promi
             return;
         }
 
-        const updatedMovieList = user.movieList.map((movieStr) => {
+        //TODO
+        const updatedMovieList = user.movieList.map((movieStr: any) => {
             const movie: ITmdbMovie = JSON.parse(movieStr as string);
             if (movie.id === movieId) {
                 return JSON.stringify({ ...movie, status });
@@ -123,7 +124,8 @@ profileRouter.get('/', async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    const parsedMovieList = user.movieList.map((movieStr) => JSON.parse(movieStr as string));
+    //TODO
+    const parsedMovieList = user.movieList.map((movieStr: any) => JSON.parse(movieStr as string));
 
     res.json({
         id: user.id,

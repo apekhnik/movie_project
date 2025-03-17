@@ -35,11 +35,11 @@ export default function RootLayout({
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden relative">
         <Header />
           <AuthProvider>
-              <LoadingWrapper>
+              {/*<LoadingWrapper>*/}
                   <StyledComponentsRegistry>
                           {children}
                   </StyledComponentsRegistry>
-              </LoadingWrapper>
+              {/*</LoadingWrapper>*/}
           </AuthProvider>
           <ToastContainer
               position="bottom-right" // Внизу справа
