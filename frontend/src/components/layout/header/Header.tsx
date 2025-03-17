@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLanguageStore } from "@/lib/stores/languageStore";
 import styled from "styled-components";
 import {useAuthStore} from "@/lib/store";
+import LanguageSwitcher from "@/components/common/lang-switcher/LanguageSwitcher";
 
 // Стили
 const HeaderWrapper = styled.header`
@@ -12,8 +13,8 @@ const HeaderWrapper = styled.header`
   left: 0;
   right: 0;
   height: 64px;
-  background: #1f2937;
-  color: white;
+    background: #121137;
+    color: white;
   z-index: 20;
   display: flex;
   align-items: center;
@@ -35,7 +36,7 @@ const Logo = styled.a`
 const NavLinks = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 4rem;
 `;
 
 const LanguageSelect = styled.select`
@@ -50,11 +51,10 @@ const LanguageSelect = styled.select`
 const AuthButton = styled.button.withConfig({
     shouldForwardProp: (prop) => prop !== "isLogout",
 })<{ isLogout: boolean }>`
-  background: ${(props) => (props.isLogout ? "#4b5563" : "#4b5563")}; /* gray-600 для обоих состояний */
   color: white;
   padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  border: none;
+  border-radius: 100px;
+  border: 1px solid white;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
 
@@ -62,6 +62,11 @@ const AuthButton = styled.button.withConfig({
     background: ${(props) => (props.isLogout ? "#6b7280" : "#6b7280")}; /* gray-500 при наведении */
   }
 `;
+
+export const StyledUserInfo = styled.div`
+    display: flex;
+    
+`
 
 export default function Header() {
     const { language, setLanguage } = useLanguageStore();
@@ -81,10 +86,10 @@ export default function Header() {
     return (
         <HeaderWrapper>
             <Nav>
-                <Link href="/" passHref legacyBehavior>
-                    <Logo>Movie App</Logo>
-                </Link>
                 <NavLinks>
+                    <Link href="/" passHref legacyBehavior>
+                        <Logo>Movie App</Logo>
+                    </Link>
                     <Link href="/movie" passHref legacyBehavior>
                         <a>Movies</a>
                     </Link>
@@ -94,13 +99,12 @@ export default function Header() {
                     <Link href="/tv" passHref legacyBehavior>
                         <a>Series</a>
                     </Link>
+                </NavLinks>
+                <NavLinks>
+                    <LanguageSwitcher/>
                     <Link href="/profile" passHref legacyBehavior>
                         <a>Profile</a>
                     </Link>
-                    <LanguageSelect value={language} onChange={handleLanguageChange}>
-                        <option value="en">English</option>
-                        <option value="ru">Русский</option>
-                    </LanguageSelect>
                     {isAuthenticated ? (
                         <AuthButton isLogout={true} onClick={handleAuthAction}>
                             Logout

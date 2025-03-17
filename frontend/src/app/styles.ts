@@ -168,9 +168,9 @@ export const BreakLabel = styled.span`
 
 
 export const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: calc(100vh);
     padding-top: 64px;
     background: #1f2937; /* Фон в стиле изображения */
@@ -323,3 +323,24 @@ export const BackLink = styled(Link)`
     text-decoration: underline;
   }
 `;
+
+
+export const LoginLeftPanel = styled.div`
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: white;
+  `;
+
+export const LoginRightPanel = styled.div`
+    flex: 1;
+    min-height: 500px;
+    background: #4a3c7a;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem;
+    color: white;
+  `;
