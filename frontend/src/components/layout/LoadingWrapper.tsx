@@ -8,7 +8,6 @@ export function LoadingWrapper({ children }: { children: React.ReactNode }) {
     console.log(isLoading, 'wrapper');
     return isLoading ? (
         <div className="flex-1 flex items-center justify-center bg-amber-700">
-            {/*<StyledLoader></StyledLoader>*/}
             LOADING
         </div>
     ) : (

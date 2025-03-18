@@ -9,7 +9,8 @@ const authRouter = Router();
 // Регистрация пользователя
 authRouter.post("/registration", async (req: Request, res: Response): Promise<void> => {
     const { login, password, username } = req.body;
-    let name = 'User';
+
+    let name = username ?? 'User';
     if (!login || !password) {
         res.status(400).json({ error: "Login and password are required" });
         return;
@@ -18,6 +19,7 @@ authRouter.post("/registration", async (req: Request, res: Response): Promise<vo
     if(!username) {
          name = `${name}-${Math.random()}`;
     }
+
     try {
         const existingUser = await prisma.user.findUnique({ where: { login } });
         if (existingUser) {
@@ -37,7 +39,7 @@ authRouter.post("/registration", async (req: Request, res: Response): Promise<vo
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || "secret", {
             expiresIn: "24h",
         });
-
+        console.log(user, 'user from db')
         res.status(201).json({ token, userId: user.id, username: user.username });
     } catch (error) {
         console.error("Registration error:", error);

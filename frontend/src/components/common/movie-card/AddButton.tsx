@@ -14,7 +14,7 @@ interface AddToProfileButtonProps {
 }
 
 export default function AddButton({ id, type }: AddToProfileButtonProps) {
-    const {isLoading, setIsLoading} = useUiStore();
+    const [isLoading, setIsLoading] = useState(false);
     const { movieIds, addMovieId, removeMovieId } = useMovieStore();
     const isAdded = movieIds.includes(id);
 

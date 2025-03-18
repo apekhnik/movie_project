@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { useLanguageStore } from "@/lib/stores/languageStore";
 import styled from "styled-components";
-import {useAuthStore} from "@/lib/store";
+import {useAuthStore, useUiStore} from "@/lib/store";
 import LanguageSwitcher from "@/components/common/lang-switcher/LanguageSwitcher";
+import {useEffect, useState} from "react";
+import {fetchProfile} from "@/lib/api";
+import {toast} from "react-toastify";
 
 // Стили
 const HeaderWrapper = styled.header`
@@ -63,13 +66,24 @@ const AuthButton = styled.button.withConfig({
   }
 `;
 
-export const StyledUserInfo = styled.div`
-    display: flex;
-    
-`
-
 export default function Header() {
     const { isAuthenticated, logout } = useAuthStore();
+    const {isLoading, setIsLoading} = useUiStore();
+    const [profile, setProfile] = useState<{ id: number; login: string; username: string; movieList: any[] } | null>(null);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            setIsLoading(true);
+
+            fetchProfile()
+                .then((data) => {
+                    setProfile(data);
+                })
+                .catch((err) => toast.error(err));
+
+            setIsLoading(false);
+        }
+    }, [isAuthenticated]);
 
     const handleAuthAction = () => {
         if (isAuthenticated) {
@@ -96,9 +110,13 @@ export default function Header() {
                 </NavLinks>
                 <NavLinks>
                     <LanguageSwitcher/>
-                    <Link href="/profile" passHref legacyBehavior>
-                        <a>Profile</a>
-                    </Link>
+
+                    {isAuthenticated && profile ? (
+                            <Link href="/profile" passHref legacyBehavior>
+                                <a>{profile.username}</a>
+                            </Link>
+                    ) : null}
+
                     {isAuthenticated ? (
                         <AuthButton isLogout={true} onClick={handleAuthAction}>
                             Logout

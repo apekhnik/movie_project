@@ -7,6 +7,7 @@ import { useMovieStore } from "@/lib/stores/movieStore";
 import { toast } from "react-toastify";
 import { ContentType, WatchStatus } from "@/types/types";
 import {useAuthStore, useUiStore} from "@/lib/store";
+import { StyledMoviesPageWrapper } from "../styles";
 
 async function updateMovieStatus(userId: number, movieId: number, status: WatchStatus) {
     const { token } = useAuthStore.getState();
@@ -53,7 +54,7 @@ export default function ProfilePage() {
                     setMovieIds(data.movieList.map((movie: any) => movie.id));
                 })
                 .catch((err) => setError(err.message));
-
+            console.log(profile)
             setIsLoading(false);
         }
     }, [isAuthenticated, setMovieIds]);
@@ -97,13 +98,8 @@ export default function ProfilePage() {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-4">Profile</h1>
-            <div className="mb-6">
-                <p className="text-lg">ID: {profile.id}</p>
-                <p className="text-lg">Login: {profile.login}</p>
-                <p className="text-lg">Login: {profile.username}</p>
-            </div>
+        <div className="min-h-screen text-white relative overflow-hidden">
+            <StyledMoviesPageWrapper>
             <h2 className="text-2xl font-semibold mb-4">Your Movie List</h2>
             {profile.movieList.length === 0 ? (
                 <p className="text-gray-600">No movies added yet.</p>
@@ -143,6 +139,7 @@ export default function ProfilePage() {
                     })}
                 </div>
             )}
+            </StyledMoviesPageWrapper>
         </div>
     );
 }

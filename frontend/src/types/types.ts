@@ -1,13 +1,13 @@
 export interface Movie {
     id: number;
-    title: string;        // TMDb использует "title" вместо "name"
-    overview: string;     // "overview" вместо "description"
-    poster_path: string;  // Путь к постеру
-    vote_average: number; // Средний рейтинг
-    release_date: string; // Дата релиза
+    title: string;
+    overview: string;
+    poster_path: string | null;
+    vote_average: number;
+    release_date: string;
     adult: boolean;
-    backdrop_path: string | null; // Может быть null в некоторых случаях
-    genre_ids: number[]; // Массив чисел
+    backdrop_path: string | null;
+    genre_ids: number[];
     original_language: string;
     original_title: string;
     popularity: number;
@@ -17,16 +17,47 @@ export interface Movie {
 
 export interface TVShow {
     id: number;
-    name: string; // Используем name вместо title
+    name: string;
     overview: string;
     poster_path: string | null;
-    first_air_date: string; // Используем first_air_date вместо release_date
+    first_air_date: string;
     vote_average: number;
     vote_count: number;
     popularity: number;
     original_language: string;
-    number_of_seasons: number; // Количество сезонов
-    number_of_episodes: number; // Количество эпизодов
+    number_of_seasons: number;
+    number_of_episodes: number;
+}
+
+// Общий тип для Movie или TVShow
+export type ContentItem = Movie | TVShow;
+
+// Дискриминированный union для определения типа
+interface BaseContent {
+    id: number;
+    overview: string;
+    poster_path: string | null;
+    vote_average: number;
+    vote_count: number;
+    popularity: number;
+    original_language: string;
+}
+
+export interface MovieContent extends BaseContent {
+    title: string;
+    release_date: string;
+    adult: boolean;
+    backdrop_path: string | null;
+    genre_ids: number[];
+    original_title: string;
+    video: boolean;
+}
+
+export interface TVShowContent extends BaseContent {
+    name: string;
+    first_air_date: string;
+    number_of_seasons: number;
+    number_of_episodes: number;
 }
 
 export enum ContentType {

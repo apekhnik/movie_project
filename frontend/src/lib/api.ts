@@ -57,6 +57,7 @@ export async function fetchProfile(): Promise<{ id: number; login: string; usern
     const data = await res.json();
 
     if (!res.ok) throw new Error(data.error || "Failed to fetch profile");
+    console.log(data)
     return data;
 }
 

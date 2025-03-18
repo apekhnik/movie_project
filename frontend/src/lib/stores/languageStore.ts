@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 export enum Languages {
-    RU = "RU",
-    EN = "EN"
+    RU = "ru",
+    EN = "en"
 }
 
 interface LanguageState {
