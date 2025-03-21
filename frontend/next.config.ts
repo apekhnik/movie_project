@@ -1,9 +1,16 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
     compiler: {
         styledComponents: true,
     },
+    webpack: (config) => {
+        config.module.rules.push({
+            test: /\.(frag|vert)$/,
+            type: 'asset/source'
+        })
+        return config
+    }
 };
 
-export default nextConfig;
+module.exports = nextConfig;

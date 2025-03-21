@@ -13,9 +13,11 @@ interface MovieState {
 
 interface UiState {
     isLoading: boolean;
+    isSearchActive: boolean;
     isSidebarOpen: boolean;
     toggleSidebar: () => void;
     setIsLoading: (isLoading: boolean) => void;
+    setIsSearchActive: (isSearchActive: boolean) => void;
 }
 
 interface AuthState {
@@ -71,14 +73,11 @@ export const useAuthStore = create<AuthState>()(
 );
 
 export const useUiStore = create<UiState>((set) => ({
-    isLoading: true,
+    isLoading: false,
+    isSearchActive: false,
     isSidebarOpen: true,
-    setIsLoading: (isLoading: boolean) => {
-        set((state) => {
-            console.log("in the store", isLoading);
-            return { ...state, isLoading };
-        });
-    },
+    setIsLoading: (isLoading: boolean) =>  set((state) => ({ isLoading })),
+    setIsSearchActive: (isSearchActive: boolean) => set((state) => ({ isSearchActive})),
     toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
 }));
 

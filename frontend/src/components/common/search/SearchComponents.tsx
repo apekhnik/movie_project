@@ -2,6 +2,7 @@
 "use client";
 
 import styled from "styled-components";
+import {useUiStore} from "@/lib/store";
 
 // Стили для обёртки инпута
 const SearchWrapper = styled.div`
@@ -45,24 +46,38 @@ const SearchIcon = styled.span`
     }
 `;
 
+export const StyledCloseBtn = styled.span`
+    position: absolute;
+    right: 3rem;
+`
+
 // Компонент инпута
 interface SearchInputProps {
     value: string;
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onEnterPress: () => void;
     placeholder?: string;
 }
 
-export const SearchInput = ({ value, onChange, placeholder = "Поиск треков, альбомов, исполнителей, подкаст" }: SearchInputProps) => {
+export const SearchInput = ({ value, onChange, onEnterPress,placeholder}: SearchInputProps) => {
+    const { setIsSearchActive, isSearchActive } = useUiStore();
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && onEnterPress) {
+            onEnterPress();
+        }
+    };
     return (
         <SearchWrapper>
             <SearchIcon>
-                <img src="images/icons/search-icon.png" alt="Search Icon" />
+                <img src="images/icons/search-icon.png" alt="Search Icon" onClick={onEnterPress}/>
             </SearchIcon>
+            <StyledCloseBtn onClick={() => setIsSearchActive(false)}>X</StyledCloseBtn>
             <SearchInputStyled
                 type="text"
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
+                onKeyDown={handleKeyDown}
             />
         </SearchWrapper>
     );

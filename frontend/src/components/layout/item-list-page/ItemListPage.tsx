@@ -20,6 +20,7 @@ export const ItemListPage: React.FC<IPropsItemListPage> = ({type}) => {
     const [currentPage, setCurrentPage] = useState(0);
     let fetchFunction;
 
+
     switch (type) {
         case ContentType.MOVIE:
             fetchFunction = fetchMoviesPages;
@@ -35,23 +36,19 @@ export const ItemListPage: React.FC<IPropsItemListPage> = ({type}) => {
     }
 
     useEffect(() => {
-        setIsLoading(true);
+        setIsLoading(true)
+        fetchFunction(currentPage + 1, language)
+            .then(setMovies)
+            .then(() => setIsLoading(false))
+            .catch(console.error);
 
-        fetchFunction(currentPage + 1, language).then(setMovies).catch(console.error);
 
-        setIsLoading(false);
     }, [currentPage, language]);
 
     const handlePageClick = (event: { selected: number }) => {
         setCurrentPage(event.selected);
     };
 
-    //TODO make loader cOMponent
-    if(isLoading) {
-        return <StyledMoviesPageWrapper>
-           <Loader/>
-        </StyledMoviesPageWrapper>
-    }
 
     return (
         isLoading ? (

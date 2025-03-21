@@ -3,12 +3,15 @@
 import { useState, useEffect } from "react";
 import { TransitionDirection } from "@/types/types";
 import { SearchMovies } from "@/components/SearchMovies";
-import styled from "styled-components"; // Добавляем styled-components для стилизации
+import styled from "styled-components";
+import Slider from "@/shader-slider/Sliders";
+import {useMovieStore} from "@/lib/store";
+import {SearchResult} from "@/components/search-result/SerachResult"; // Добавляем styled-components для стилизации
 
 // Стилизованные компоненты
 const SliderContainer = styled.div`
   position: relative;
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -111,115 +114,16 @@ const Dot = styled.div<{ active: boolean }>`
 `;
 
 export default function Home() {
-    const backdrops = [
-        "/images/1.png",
-        "/images/2.png",
-        "/images/3.png",
-        "/images/4.png",
-        "/images/5.png",
-    ];
 
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [nextIndex, setNextIndex] = useState(1);
-    const [isTransitioning, setIsTransitioning] = useState(false);
-    const [direction, setDirection] = useState<"left" | "right">(TransitionDirection.RIGHT);
-    const changeInterval = 5000;
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setDirection("right");
-            setIsTransitioning(true);
-        }, changeInterval);
-
-        return () => clearInterval(interval);
-    }, [backdrops.length, changeInterval]);
-
-    const handleTransitionEnd = () => {
-        if (isTransitioning) {
-            setCurrentIndex(nextIndex);
-            setNextIndex((nextIndex + (direction === "right" ? 1 : -1 + backdrops.length)) % backdrops.length);
-            setIsTransitioning(false);
-        }
-    };
-
-    const handleNext = () => {
-        if (!isTransitioning) {
-            setDirection("right");
-            setNextIndex((currentIndex + 1) % backdrops.length);
-            setIsTransitioning(true);
-        }
-    };
-
-    const handlePrev = () => {
-        if (!isTransitioning) {
-            setDirection("left");
-            setNextIndex(currentIndex === 0 ? backdrops.length - 1 : currentIndex - 1);
-            setIsTransitioning(true);
-        }
-    };
 
     return (
         <SliderContainer>
-            {/* Текущий фон */}
-            <BackgroundLayer
-                active={isTransitioning}
-                direction={direction}
-                style={{ backgroundImage: `url(${backdrops[currentIndex]})` }}
-                className={
-                    isTransitioning
-                        ? direction === "right"
-                            ? "animate-slide-out-right"
-                            : "animate-slide-out-left"
-                        : ""
-                }
-                onAnimationEnd={handleTransitionEnd}
-            />
-            {/* Следующий фон */}
-            <BackgroundLayer
-                active={isTransitioning}
-                direction={direction === "right" ? "left" : "right"} // Обратное направление для входящего слайда
-                style={{ backgroundImage: `url(${backdrops[nextIndex]})` }}
-                className={
-                    isTransitioning
-                        ? direction === "right"
-                            ? "animate-slide-in-right"
-                            : "animate-slide-in-left"
-                        : "opacity-0"
-                }
-            />
-            {/* Полупрозрачный слой */}
+
+            <Slider/>
             <Overlay />
 
-            {/* Кнопка "Назад" */}
-            <PrevButton onClick={handlePrev}>
-                {/* Место для иконки PNG */}
-                 <img src="images/icons/left-arrow.png" alt="Previous" />
-            </PrevButton>
-
-            {/* Кнопка "Вперёд" */}
-            <NextButton onClick={handleNext}>
-                {/* Место для иконки PNG */}
-                 <img src="images/icons/right-arrow.png" alt="Next" />
-            </NextButton>
-
-            {/* Индикаторы (точки) */}
-            <DotsContainer>
-                {backdrops.map((_, index) => (
-                    <Dot
-                        key={index}
-                        active={index === currentIndex}
-                        onClick={() => {
-                            if (!isTransitioning) {
-                                setNextIndex(index);
-                                setDirection(index > currentIndex ? "right" : "left");
-                                setIsTransitioning(true);
-                            }
-                        }}
-                    />
-                ))}
-            </DotsContainer>
-
             <SearchMovies />
+            <SearchResult/>
         </SliderContainer>
     );
 }
