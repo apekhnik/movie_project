@@ -1,20 +1,27 @@
 import styled from "styled-components";
-import { useState } from "react";
-import {Languages, useLanguageStore} from "@/lib/stores/languageStore";
+import {useState} from "react";
+import {LanguagesClient, LanguagesServer, useLanguageStore} from "@/lib/stores/languageStore";
 
 const CustomSelect = styled.div`
     position: relative;
-    width: 60px;
 `;
 
 const SelectButton = styled.div`
   background: transparent; /* Убираем фон */
+    transition: background 0.3s ease-in-out;
   color: white; /* Белый текст */
-  padding: 0.375rem 1.5rem 0.375rem 0.5rem; /* Увеличен правый отступ */
   border-radius: 0.5rem; /* Скругление углов */
+    padding: 6px;
   cursor: pointer; /* Единственная интерактивность */
   text-align: center;
   position: relative;
+    display: flex;
+    justify-content: center;
+    &:hover {
+        background-color: var(--main_grey);
+        color: var(--main_dark);/* Темнее при наведении на опции */
+    }
+    border: 1px solid var(--main_grey);
 `;
 
 const OptionsList = styled.ul<{ open: boolean }>`
@@ -46,7 +53,7 @@ export default function LanguageSwitcher() {
     const {language, setLanguage} = useLanguageStore();
     const [isOpen, setIsOpen] = useState(false);
 
-    const handleLanguageChange = (value: Languages) => {
+    const handleLanguageChange = (value: LanguagesServer) => {
         setLanguage(value);
         setIsOpen(false);
     };
@@ -54,11 +61,11 @@ export default function LanguageSwitcher() {
     return (
         <CustomSelect>
             <SelectButton onClick={() => setIsOpen(!isOpen)}>
-                {language}
+                {language === LanguagesServer.RU ? LanguagesClient.RU : LanguagesClient.EN}
             </SelectButton>
             <OptionsList open={isOpen}>
-                <Option onClick={() => handleLanguageChange(Languages.EN)}>EN</Option>
-                <Option onClick={() => handleLanguageChange(Languages.RU)}>RU</Option>
+                <Option onClick={() => handleLanguageChange(LanguagesServer.EN)}>EN</Option>
+                <Option onClick={() => handleLanguageChange(LanguagesServer.RU)}>RU</Option>
             </OptionsList>
         </CustomSelect>
     );

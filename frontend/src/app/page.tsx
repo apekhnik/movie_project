@@ -6,7 +6,7 @@ import { SearchMovies } from "@/components/SearchMovies";
 import styled from "styled-components";
 import Slider from "@/shader-slider/Sliders";
 import {useMovieStore} from "@/lib/store";
-import {SearchResult} from "@/components/search-result/SerachResult"; // Добавляем styled-components для стилизации
+import {SearchResult} from "@/components/search-result/SearchResult"; // Добавляем styled-components для стилизации
 
 // Стилизованные компоненты
 const SliderContainer = styled.div`

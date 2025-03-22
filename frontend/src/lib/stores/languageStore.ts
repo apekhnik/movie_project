@@ -1,16 +1,21 @@
 import { create } from "zustand";
 
-export enum Languages {
+export enum LanguagesServer {
     RU = "ru",
     EN = "en"
 }
 
+export enum LanguagesClient {
+    RU = "RU",
+    EN = "EN"
+}
+
 interface LanguageState {
-    language: Languages; // Например, "en" или "ru"
-    setLanguage: (lang: Languages) => void;
+    language: LanguagesServer; // Например, "en" или "ru"
+    setLanguage: (lang: LanguagesServer) => void;
 }
 
 export const useLanguageStore = create<LanguageState>((set) => ({
-    language: Languages.EN,
-    setLanguage: (lang:Languages) => set({ language: lang }),
+    language: LanguagesServer.EN,
+    setLanguage: (lang:LanguagesServer) => set({ language: lang }),
 }));

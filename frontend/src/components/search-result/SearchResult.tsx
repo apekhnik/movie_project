@@ -6,12 +6,15 @@ import { useMovieStore, useUiStore } from "@/lib/store";
 import { ContentType, MovieContent } from "@/types/types";
 import {
     SearchResultContainer,
-    SearchResultItem,
+    SearchResultItemWrapper,
     SearchResultImage,
     SearchResultInfo,
     SearchResultTitle,
     SearchResultText,
 } from "./styles";
+import {log} from "node:util";
+import * as sea from "node:sea";
+import {SearchResultItem} from "@/components/search-result/SearchResultItem";
 
 export function SearchResult() {
     const { searchResults } = useMovieStore();
@@ -66,24 +69,7 @@ export function SearchResult() {
 
     return (
         <SearchResultContainer ref={containerRef}>
-            {searchResults.map((result: MovieContent) => {
-                const posterUrl = result.poster_path
-                    ? `https://image.tmdb.org/t/p/w200${result.poster_path}`
-                    : "/placeholder.jpg";
-
-                return (
-                    <Link key={result.id} href={`/movie/${result.id}`}>
-                        <SearchResultItem>
-                            <SearchResultImage src={posterUrl} alt={result.title} />
-                            <SearchResultInfo>
-                                <SearchResultTitle>{result.title}</SearchResultTitle>
-                                <SearchResultText>Rating: {result.vote_average || "N/A"}</SearchResultText>
-                                <SearchResultText>Release: {result.release_date || "N/A"}</SearchResultText>
-                            </SearchResultInfo>
-                        </SearchResultItem>
-                    </Link>
-                );
-            })}
+            {searchResults.map((result: MovieContent) => <SearchResultItem result={result} />)}
         </SearchResultContainer>
     );
 }

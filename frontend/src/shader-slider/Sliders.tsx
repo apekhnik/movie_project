@@ -36,7 +36,7 @@ const NextButton = styled.button`
         background: rgba(0, 0, 0, 0.8);
     }
 `;
-
+//TODO
 const Slider = () => {
     const mountRef = useRef<HTMLDivElement | null>(null);
     const currentSlide = useRef<number>(0);
@@ -152,6 +152,7 @@ const Slider = () => {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
+
         if (materialRef.current && texturesRef.current.length > 0) {
             const nextSlide = (currentSlide.current + 1) % images.length;
             materialRef.current.uniforms.to.value = texturesRef.current[nextSlide];
@@ -170,12 +171,12 @@ const Slider = () => {
 
     return (
         <div ref={mountRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '64px' }}>
-            {/*<PrevButton onClick={handlePrev}>*/}
-            {/*    <img src="/images/icons/left-arrow.png" alt="Previous" />*/}
-            {/*</PrevButton>*/}
-            {/*<NextButton onClick={handleNext}>*/}
-            {/*    <img src="/images/icons/right-arrow.png" alt="Next" />*/}
-            {/*</NextButton>*/}
+            <PrevButton onClick={handlePrev}>
+                <img src="/images/icons/left-arrow.png" alt="Previous" />
+            </PrevButton>
+            <NextButton onClick={handleNext}>
+                <img src="/images/icons/right-arrow.png" alt="Next" />
+            </NextButton>
         </div>
     );
 };

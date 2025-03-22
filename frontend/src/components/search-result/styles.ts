@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const SearchResultContainer = styled.div`
     z-index: 10;
     width: 900px;
-    height: 220px;
+    height: 420px;
     overflow-x: auto;
     overflow-y: hidden;
     display: flex;
@@ -26,9 +26,9 @@ export const SearchResultContainer = styled.div`
     }
 `;
 
-export const SearchResultItem = styled.div`
-    width: 200px;
-    height: 200px;
+export const SearchResultItemWrapper = styled.div`
+    width: 400px;
+    height: 400px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -46,8 +46,8 @@ export const SearchResultItem = styled.div`
 `;
 
 export const SearchResultImage = styled.img`
-    width: 180px;
-    height: 120px;
+    width: 400px;
+    height: 400px;
     object-fit: cover;
     border-radius: 4px;
 `;
